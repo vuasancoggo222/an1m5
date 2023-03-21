@@ -1,0 +1,138 @@
+<script setup lang="ts">
+import { navLink, userDropdown } from "@/constants/navLink";
+import DropdownList from "@/components/dropdown/DropdownList.vue";
+import DropdownSearch from "../dropdown/DropdownSearch.vue";
+import { useRoute } from "vue-router";
+import useRedirectRouter from "@/uses/useRedirectRouter";
+import {reactive, ref, watch } from "vue";
+import { searchFunction } from "@/api/search";
+const route = useRoute();
+const { redirectRouter } = useRedirectRouter();
+const currentTabs = ref<string>(route.path);
+const searchTimeout = ref<any>(0);
+const searchData = reactive<any>({});
+const openSearchDropdown = ref<boolean>(false)
+const user = ref(false)
+const searchQuery = reactive({
+  query: "",
+  page: 1,
+  perPage: 6,
+  season: "",
+  format: "",
+  genres: "",
+  year: "",
+});
+
+const showHideDropdown = () => {
+  if(searchQuery.query) openSearchDropdown.value = true
+  else openSearchDropdown.value = false
+}
+const getSearchData = async () => {
+  try {
+    const { query, page, perPage, season, format, genres, year } = searchQuery;
+      const {data} = await searchFunction(query, page, perPage, season, format, genres, year);
+      searchData.response = data
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getRandomAnime = () => {}
+watch(route, (route) => {
+  currentTabs.value = route.path;
+});
+
+watch(
+  searchQuery,
+  () => {
+    showHideDropdown()
+    clearTimeout(searchTimeout.value);
+    searchTimeout.value = setTimeout(() => {
+      getSearchData();
+    }, 300);
+  },
+  { immediate: true }
+);
+</script>
+<template>
+  <div class="header-wrapper">
+    <v-tabs color="deep-purple-accent-4" v-model="currentTabs" align-tabs="center">
+      <template v-for="nav in navLink" :key="nav.name">
+        <v-tab :value="nav.path" @click="redirectRouter(nav.path)">{{ nav.name }}</v-tab>
+      </template>
+    </v-tabs>
+    <div class="side-right-header">
+
+      <div class="search-wrapper" style="position: relative">
+        <input v-model="searchQuery.query" type="text" />
+        <dropdown-search
+          @close-dropdown="openSearchDropdown = false"
+          :dropdown-items="searchData"
+          class="search-dropdown"
+          :open="openSearchDropdown"
+          :width="320"
+          active-color="primary"
+        />
+      </div>
+      <div class="authenticate-wrapper" v-if="!user">
+        <v-btn variant="outlined">Sign in</v-btn>
+        <v-btn color="primary" variant="flat">Sign up</v-btn>
+      </div>
+      <div class="user-wrapper" v-else>
+        <v-menu transition="scale-transition">
+          <template v-slot:activator="{ props }">
+            <v-btn color="primary" icon="mdi-account" v-bind="props" size="small">
+            </v-btn>
+          </template>
+          <dropdown-list
+            :dropdown-items="userDropdown"
+            :width="200"
+            active-color="primary"
+          />
+        </v-menu>
+        <v-btn icon="mdi-heart" size="small" color="error"></v-btn>
+      </div>
+      <v-btn @click="getRandomAnime" style="margin-left:15px;" variant="outlined"
+      color="error" >Random anime</v-btn>
+     
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-wrapper {
+  margin-right: 15px;
+}
+
+.search-wrapper input {
+  width: 320px;
+  height: 40px;
+  border: 2px solid #cbc0c0;
+  border-radius: 12px;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.side-left-header {
+  flex: 7;
+  display: flex;
+  align-items: center;
+}
+
+.side-right-header {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+ 
+}
+
+.side-right-header div {
+  gap: 15px;
+  display: flex;
+}
+</style>
