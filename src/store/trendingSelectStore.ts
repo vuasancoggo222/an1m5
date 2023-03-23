@@ -3,6 +3,8 @@ import { ref } from 'vue'
 
 export const useTrendingSelectStore = defineStore('trending',() =>{
     const trendingLimit = ref<number>(20) 
+    const page = ref<number>(1)
+    const hasNextPage = ref<boolean>(true)
     const limitOption = ref([
         {
             title : '15 per page',
@@ -23,6 +25,8 @@ export const useTrendingSelectStore = defineStore('trending',() =>{
     ])
     return {
         trendingLimit,
-        limitOption
+        limitOption,
+        page,
+        hasNextPage
     }
 })

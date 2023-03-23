@@ -5,11 +5,13 @@ import { getRecentAnimeFunction } from "@/api/recent-anime";
 import { useTrendingSelectStore } from "@/store/trendingSelectStore";
 import CustomCard from "@/components/card/CustomCard.vue";
 import { getTrendingAnimeFunction } from "@/api/trending-anime";
+import useDebounce from "@/uses/useDebounce";
 import FilmCard from "@/components/card/FilmCard.vue";
 const recentAnimeData = ref<any>([]);
 const trendingAnime = ref<any>([]);
 const trending = useTrendingSelectStore();
-const apiTimeout = ref<any>(0);
+const {debounce} = useDebounce()
+const isDisabledBtn = ref<boolean>(false)
 onMounted(() => {
   (async () => {
     try {
@@ -17,7 +19,8 @@ onMounted(() => {
       const recentAnime = data.results
         .filter((item: { type: string }) => item.type !== "ONA")
         .slice(0, 20);
-      recentAnimeData.value = recentAnime;
+        recentAnimeData.value = recentAnime;
+        trending.$patch({hasNextPage : data.hasNextPage })
     } catch (error) {
       console.log(error);
     }
@@ -27,17 +30,17 @@ onMounted(() => {
 
 const getTrendingAnime = async () => {
   try {
-    const { data } = await getTrendingAnimeFunction(trending.trendingLimit);
+    const { data } = await getTrendingAnimeFunction(trending.page,trending.trendingLimit);
     trendingAnime.value = data.results;
+    isDisabledBtn.value = false
+    
   } catch (error) {
     console.log(error);
   }
 };
 trending.$subscribe(() => {
-  clearTimeout(apiTimeout.value);
-  apiTimeout.value = setTimeout(() => {
-    getTrendingAnime();
-  }, 600);
+  isDisabledBtn.value = true
+  debounce(getTrendingAnime,600)
 });
 </script>
 
@@ -65,16 +68,16 @@ trending.$subscribe(() => {
   </div>
   <v-layout class="overflow-visible" style="height: 56px">
     <v-bottom-navigation color="teal" grow>
-      <v-btn>
+      <v-btn @click="trending.$patch({ page : Number(trending.page) - 1})" :disabled="trending.page == 1 || isDisabledBtn">
         <v-icon>mdi-page-previous</v-icon>
         Previous page
       </v-btn>
 
-      <v-btn>
+      <v-btn >
         <v-icon>mdi-book-open-page-variant</v-icon>
-        Limit {{ trending.trendingLimit }}
+         {{ trending.trendingLimit }} / page {{ trending.page  }}
       </v-btn>
-      <v-btn>
+      <v-btn :disabled="!trending.hasNextPage || isDisabledBtn" @click="trending.$patch({ page : Number(trending.page) + 1})" >
         <v-icon>mdi-page-next</v-icon>
         Next page
       </v-btn>

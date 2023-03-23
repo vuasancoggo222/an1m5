@@ -4,15 +4,17 @@ import DropdownList from "@/components/dropdown/DropdownList.vue";
 import DropdownSearch from "../dropdown/DropdownSearch.vue";
 import { useRoute } from "vue-router";
 import useRedirectRouter from "@/uses/useRedirectRouter";
-import {reactive, ref, watch } from "vue";
+import { reactive, ref, watch } from "vue";
 import { searchFunction } from "@/api/search";
+import useDebounce from "@/uses/useDebounce";
 const route = useRoute();
 const { redirectRouter } = useRedirectRouter();
 const currentTabs = ref<string>(route.path);
-const searchTimeout = ref<any>(0);
 const searchData = reactive<any>({});
-const openSearchDropdown = ref<boolean>(false)
-const user = ref(false)
+const openSearchDropdown = ref<boolean>(false);
+const user = ref(false);
+
+const {debounce} = useDebounce()
 const searchQuery = reactive({
   query: "",
   page: 1,
@@ -24,19 +26,34 @@ const searchQuery = reactive({
 });
 
 const showHideDropdown = () => {
-  if(searchQuery.query) openSearchDropdown.value = true
-  else openSearchDropdown.value = false
-}
+  if (searchQuery.query) openSearchDropdown.value = true;
+  else openSearchDropdown.value = false;
+};
 const getSearchData = async () => {
   try {
-    const { query, page, perPage, season, format, genres, year } = searchQuery;
-      const {data} = await searchFunction(query, page, perPage, season, format, genres, year);
-      searchData.response = data
+    if (searchQuery.query !== "" ?? null) {
+      const { query, page, perPage, season, format, genres, year } =
+        searchQuery;
+      const { data } = await searchFunction(
+        query,
+        page,
+        perPage,
+        season,
+        format,
+        genres,
+        year
+      );
+      searchData.response = data;
+    }
   } catch (error) {
     console.log(error);
   }
 };
-const getRandomAnime = () => {}
+const closeDropdown = (reset: boolean) => {
+  openSearchDropdown.value = false;
+  if (reset) searchQuery.query = "";
+};
+const getRandomAnime = () => {};
 watch(route, (route) => {
   currentTabs.value = route.path;
 });
@@ -44,28 +61,30 @@ watch(route, (route) => {
 watch(
   searchQuery,
   () => {
-    showHideDropdown()
-    clearTimeout(searchTimeout.value);
-    searchTimeout.value = setTimeout(() => {
-      getSearchData();
-    }, 300);
+    showHideDropdown();
+    debounce(getSearchData,300)
   },
   { immediate: true }
 );
 </script>
 <template>
   <div class="header-wrapper">
-    <v-tabs color="deep-purple-accent-4" v-model="currentTabs" align-tabs="center">
+    <v-tabs
+      color="deep-purple-accent-4"
+      v-model="currentTabs"
+      align-tabs="center"
+    >
       <template v-for="nav in navLink" :key="nav.name">
-        <v-tab :value="nav.path" @click="redirectRouter(nav.path)">{{ nav.name }}</v-tab>
+        <v-tab :value="nav.path" @click="redirectRouter(nav.path)">{{
+          nav.name
+        }}</v-tab>
       </template>
     </v-tabs>
     <div class="side-right-header">
-
       <div class="search-wrapper" style="position: relative">
         <input v-model="searchQuery.query" type="text" />
         <dropdown-search
-          @close-dropdown="openSearchDropdown = false"
+          @close-dropdown="closeDropdown"
           :dropdown-items="searchData"
           class="search-dropdown"
           :open="openSearchDropdown"
@@ -80,7 +99,12 @@ watch(
       <div class="user-wrapper" v-else>
         <v-menu transition="scale-transition">
           <template v-slot:activator="{ props }">
-            <v-btn color="primary" icon="mdi-account" v-bind="props" size="small">
+            <v-btn
+              color="primary"
+              icon="mdi-account"
+              v-bind="props"
+              size="small"
+            >
             </v-btn>
           </template>
           <dropdown-list
@@ -91,9 +115,13 @@ watch(
         </v-menu>
         <v-btn icon="mdi-heart" size="small" color="error"></v-btn>
       </div>
-      <v-btn @click="getRandomAnime" style="margin-left:15px;" variant="outlined"
-      color="error" >Random anime</v-btn>
-     
+      <v-btn
+        @click="getRandomAnime"
+        style="margin-left: 15px"
+        variant="outlined"
+        color="error"
+        >Random anime</v-btn
+      >
     </div>
   </div>
 </template>
@@ -128,7 +156,6 @@ watch(
   display: flex;
   align-items: center;
   justify-content: flex-end;
- 
 }
 
 .side-right-header div {

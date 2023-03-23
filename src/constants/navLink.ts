@@ -1,7 +1,7 @@
 import type {INavLink} from '@/types/nav'
 export const navLink:INavLink[] = [
     {
-        name : "Home",
+        name : "An1m5",
         path : "/",
     },
     {
@@ -11,10 +11,6 @@ export const navLink:INavLink[] = [
     {
         name : "Schedule",
         path : "/schedule",
-    },
-    {
-        name : "Category",
-        path : "/category"
     }
 ]
 

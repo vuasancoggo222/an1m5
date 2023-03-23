@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
+import convertToSlug from "@/helper/convertToSlug";
 import { useRouter } from "vue-router";
-import slugify from "slugify";
 const router = useRouter();
 defineProps({
     isSelected : {},
@@ -26,7 +25,7 @@ defineProps({
           :width="width"
           @click="
             router.push(
-              `/watch/${item?.id}/${slugify(item?.title.userPreferred)}`
+              `/info/${convertToSlug(item?.title.romaji || item?.title.userPreferred)}?id=${item?.id}`
             )
           "
         >
@@ -36,7 +35,7 @@ defineProps({
                 {{ item?.episodeNumber || item?.totalEpisodes }}
               </v-chip>
             </v-card-subtitle>
-            <v-card-title>{{ item?.title.userPreferred }}</v-card-title>
+            <v-card-title>{{item?.title.romaji || item?.title.userPreferred }}</v-card-title>
           </div>
           <div class="slide-image">
             <v-img

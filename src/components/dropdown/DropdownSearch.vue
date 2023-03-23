@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
-import slugify from "slugify";
+import convertToSlug from "@/helper/convertToSlug";
 
 defineProps({
-  open : {
-    type : Boolean
+  open: {
+    type: Boolean,
   },
   dropdownItems: {
     type: Object,
@@ -13,37 +13,36 @@ defineProps({
     type: Number,
   },
 });
-
+const emit =defineEmits (['closeDropdown'])
 const router = useRouter();
-
-
-
+const redirectToInfoPage = (title: string, id: number) => {
+  router.push(`/info/${convertToSlug(title)}?id=${id}`);
+  emit('closeDropdown')
+};
 </script>
 
 <template>
-  <div v-if="open" style="position: absolute; top: 50px;z-index: 9999;">
+  <div v-if="open" style="position: absolute; top: 50px; z-index: 9999">
     <v-card
       style="position: relative"
       v-if="dropdownItems?.response.totalResults !== 0"
       :width="width"
       height="410"
-      :text="`We found ${dropdownItems?.response.totalResults} anime in this keyword.`"
+      :text="`We found ${
+        dropdownItems?.response.totalResults ?? 0
+      }  anime in this keyword.`"
     >
       <v-btn
-        @click="$emit('closeDropdown')"
+        @click="$emit('closeDropdown',true)"
         icon="mdi-close"
         size="x-small"
         color="error"
         variant="text"
-        style="position: absolute; right: 5px;top:10px;z-index: 2;"
+        style="position: absolute; right: 5px; top: 10px; z-index: 2"
       ></v-btn>
       <v-list lines="one">
         <v-list-item
-          @click="
-            router.push(
-              `/watch/${item.id}/${slugify(item.title.userPreferred)}`
-            )
-          "
+          @click="redirectToInfoPage(item.title.romaji || item.title.userPreferred, item.id)"
           class="search-items"
           v-for="item in dropdownItems?.response.results"
           :key="item.id"

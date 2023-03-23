@@ -48,6 +48,7 @@ const selectValue = (event : any ) => emit('selectValue',event.target.value)
 .custom-card .card-header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 .select-dropdown,
 .select-dropdown * {
