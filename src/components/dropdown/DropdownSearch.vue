@@ -12,6 +12,9 @@ defineProps({
   width: {
     type: Number,
   },
+  keyword:{
+    type : String
+  }
 });
 const emit = defineEmits (['closeDropdown'])
 const router = useRouter();
@@ -22,6 +25,7 @@ const redirectToInfoPage = (title: string, id: number) => {
 </script>
 
 <template>
+
   <div v-if="open" style="position: absolute; top: 50px; z-index: 9999">
     <v-card
       style="position: relative"
@@ -51,7 +55,7 @@ const redirectToInfoPage = (title: string, id: number) => {
         ></v-list-item>
       </v-list>
       <v-card-actions style="position: absolute; bottom: 5px; right: 0px">
-        <v-btn variant="flat" color="error">See more</v-btn>
+        <v-btn variant="flat" color="error" @click="router.push(`/filter/search?keyword=${keyword}`)">See more</v-btn>
       </v-card-actions>
     </v-card>
     <v-card

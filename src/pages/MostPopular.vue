@@ -49,7 +49,7 @@ watch(
           <div>
             <div
               @click="
-                router.push(`/info/${item.id}/${convertToSlug(item.title.romaji || item.title.userPreferred)}`)">
+                router.push(`/info/${convertToSlug(item.title.romaji || item.title.userPreferred)}?id=${item.id}`)">
               <h3 class="title">#{{ i + 1 }} {{item.title.romaji || item.title.userPreferred }}</h3>
               <span>Release date : {{ item.releaseDate }}</span
               ><br />

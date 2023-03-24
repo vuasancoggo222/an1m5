@@ -32,6 +32,11 @@ const router = createRouter({
       name: "Schedule",
       component: () => import("@/pages/Schedule.vue")
     },
+    {
+      path : '/filter/:action',
+      name : 'FilterPage',
+      component : () => import('@/pages/FilterValuePage.vue')
+    }
   ],
 });
 

@@ -1,32 +1,18 @@
 <script setup lang="ts">
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
-import { onMounted, ref } from "vue";
-import { getRecentAnimeFunction } from "@/api/recent-anime";
+import { ref } from "vue";
+import  getRecentAnimeFunction  from "@/api/recent-anime";
 import { useTrendingSelectStore } from "@/store/trendingSelectStore";
 import CustomCard from "@/components/card/CustomCard.vue";
 import { getTrendingAnimeFunction } from "@/api/trending-anime";
 import useDebounce from "@/uses/useDebounce";
 import FilmCard from "@/components/card/FilmCard.vue";
-const recentAnimeData = ref<any>([]);
+
 const trendingAnime = ref<any>([]);
 const trending = useTrendingSelectStore();
 const {debounce} = useDebounce()
 const isDisabledBtn = ref<boolean>(false)
-onMounted(() => {
-  (async () => {
-    try {
-      const { data } = await getRecentAnimeFunction();
-      const recentAnime = data.results
-        .filter((item: { type: string }) => item.type !== "ONA")
-        .slice(0, 20);
-        recentAnimeData.value = recentAnime;
-        trending.$patch({hasNextPage : data.hasNextPage })
-    } catch (error) {
-      console.log(error);
-    }
-  })();
-  getTrendingAnime();
-});
+const { recentAnimeData ,recentIsFinished } =  getRecentAnimeFunction();
 
 const getTrendingAnime = async () => {
   try {
@@ -42,6 +28,7 @@ trending.$subscribe(() => {
   isDisabledBtn.value = true
   debounce(getTrendingAnime,600)
 });
+getTrendingAnime();
 </script>
 
 <template>
@@ -50,6 +37,7 @@ trending.$subscribe(() => {
       :data="recentAnimeData"
       card-title="Recent anime"
       card-title-icon="mdi-history"
+      :style="recentIsFinished ? '' : 'opacity : 0.5'"
     />
   </div>
   <div class="mt-12">

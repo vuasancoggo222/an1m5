@@ -14,12 +14,12 @@ defineProps({
 </script>
 
 <template>
-  <v-sheet class="mx-auto" elevation="4" max-width="100%">
+  <v-sheet class="mx-auto mt-12" elevation="6" max-width="100%">
     <v-chip style="margin: 16px" color="blue" label text-color="white">
       <v-icon start :icon="cardTitleIcon"></v-icon>
       {{ cardTitle }}
     </v-chip>
-    <v-slide-group v-if="data?.length" class="pa-4" center-active>
+    <v-slide-group v-if="data?.length" class="pa-2" center-active>
       <v-slide-group-item
         v-for="item in data as any"
         :key="item.id"

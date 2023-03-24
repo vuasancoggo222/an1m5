@@ -17,3 +17,4 @@ export const searchFunction = (
         }
         return config.get(url)
     }
+export const searchAnimeByGenresFunction =  (genres: string) => config.get(`advanced-search?genres=["${genres}"]`)
