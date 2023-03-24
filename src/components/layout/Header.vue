@@ -49,9 +49,12 @@ const getSearchData = async () => {
     console.log(error);
   }
 };
-const closeDropdown = (reset: boolean) => {
+const closeSearchDropdown = (reset: boolean) => {
   openSearchDropdown.value = false;
-  if (reset) searchQuery.query = "";
+  if (reset) {
+    searchQuery.query = "";
+    searchData.response = []
+  }
 };
 const getRandomAnime = () => {};
 watch(route, (route) => {
@@ -83,8 +86,8 @@ watch(
     <div class="side-right-header">
       <div class="search-wrapper" style="position: relative">
         <input v-model="searchQuery.query" type="text" />
-        <dropdown-search
-          @close-dropdown="closeDropdown"
+        <DropdownSearch
+          @closeDropdown="closeSearchDropdown"
           :dropdown-items="searchData"
           class="search-dropdown"
           :open="openSearchDropdown"

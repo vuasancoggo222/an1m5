@@ -27,6 +27,11 @@ const router = createRouter({
       name: "NotFound",
       component: NotFound,
     },
+    {
+      path: "/schedule",
+      name: "Schedule",
+      component: () => import("@/pages/Schedule.vue")
+    },
   ],
 });
 

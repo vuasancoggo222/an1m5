@@ -13,7 +13,7 @@ defineProps({
     type: Number,
   },
 });
-const emit =defineEmits (['closeDropdown'])
+const emit = defineEmits (['closeDropdown'])
 const router = useRouter();
 const redirectToInfoPage = (title: string, id: number) => {
   router.push(`/info/${convertToSlug(title)}?id=${id}`);
@@ -25,11 +25,11 @@ const redirectToInfoPage = (title: string, id: number) => {
   <div v-if="open" style="position: absolute; top: 50px; z-index: 9999">
     <v-card
       style="position: relative"
-      v-if="dropdownItems?.response.totalResults !== 0"
+      v-if="dropdownItems?.response?.totalResults !== 0"
       :width="width"
       height="410"
       :text="`We found ${
-        dropdownItems?.response.totalResults ?? 0
+        dropdownItems?.response?.totalResults ?? 0
       }  anime in this keyword.`"
     >
       <v-btn
@@ -44,9 +44,9 @@ const redirectToInfoPage = (title: string, id: number) => {
         <v-list-item
           @click="redirectToInfoPage(item.title.romaji || item.title.userPreferred, item.id)"
           class="search-items"
-          v-for="item in dropdownItems?.response.results"
+          v-for="item in dropdownItems?.response?.results"
           :key="item.id"
-          :title="item.title.userPreferred"
+          :title="item.title.romaji"
           :prepend-avatar="item.image"
         ></v-list-item>
       </v-list>

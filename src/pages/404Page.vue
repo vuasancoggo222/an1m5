@@ -1,6 +1,6 @@
 <script setup lang="ts">
-
-
+import { useRouter } from 'vue-router';
+const router = useRouter()
 </script>
 
 <template>
@@ -23,7 +23,7 @@
         This page is not available in the website,please check your url address.
       </p>
 
-      <v-btn variant="outlined" color="orange">Go to Login</v-btn>
+      <v-btn @click="router.push('/')" variant="outlined" color="orange">Go to Homepage</v-btn>
     </div>
   </v-sheet>
 
