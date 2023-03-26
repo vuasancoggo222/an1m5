@@ -5,6 +5,7 @@ import { ref, watch } from "vue";
 import convertToHours from "@/helper/convertToHours";
 import { useRoute, useRouter } from "vue-router";
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
+import InfoLine from "@/components/line/InfoLine.vue";
 const isLatestEpisode = ref<boolean>(false);
 const animeInfo = ref<any>({});
 const route = useRoute();
@@ -67,17 +68,23 @@ watch(isLatestEpisode, (status) => {
           <div v-if="animeInfo" class="info-episode">
             <div class="mb-4">
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-                {{ animeInfo.currentEpisode }} / {{ animeInfo.totalEpisodes }}
+               <span v-if="animeInfo.currentEpisode || animeInfo.totalEpisodes">
+                {{ animeInfo.currentEpisode }} / {{ animeInfo.totalEpisodes }} 
+               </span>
+               <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" color="pink">
                 <v-icon start icon="mdi-clock-time-eight"></v-icon>
-                {{ convertToHours(animeInfo.duration) }}
+                <span v-if="animeInfo.duration">{{ convertToHours(animeInfo.duration) }}</span>
+                <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-                {{ animeInfo.releaseDate }}
+                <span v-if="animeInfo.releaseDate">{{ animeInfo.releaseDate }}</span>
+                <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-                {{ animeInfo.season }}
+             <span v-if="animeInfo.season">   {{ animeInfo.season }}</span>
+                <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" icon="mdi-update">
                 {{ animeInfo.status }}
@@ -94,26 +101,27 @@ watch(isLatestEpisode, (status) => {
                 </v-chip>
               </v-chip-group>
               <div class="info-line-wrapper">
-                <div class="info-line">
-                  <span>Studio</span> :
-                  <span v-for="studio in animeInfo.studios">{{
+              <InfoLine title="Studio">
+                <span v-if="animeInfo.studios.length" v-for="studio in animeInfo.studios">{{
                     studio.toUpperCase()
                   }}</span>
-                </div>
-                <div class="info-line">
-                  <span>Status</span> : <span>{{ animeInfo.status }}</span>
-                </div>
-                <div class="info-line">
-                  <span>Type</span> : <span>{{ animeInfo.type }}</span>
-                </div>
-                <div class="info-line">
-                  <span>Start date</span> :
+                <span v-else>Updating</span>
+              </InfoLine>
+                <InfoLine title="Status" :data="animeInfo.status"/>
+                
+                
+                <InfoLine title="Type" :data=" animeInfo.type "/>
+                
+                <InfoLine title="Start date">
                   <span
+                    v-if="animeInfo.startDate?.year"
                     >{{ animeInfo?.startDate?.day }}/{{
                       animeInfo?.startDate?.month
                     }}/{{ animeInfo?.startDate?.year }}</span
                   >
-                </div>
+                  <span v-else> Updating</span>
+                </InfoLine >
+                
               </div>
               <div
                 style="color: black; font-size: 14px"
@@ -213,19 +221,9 @@ watch(isLatestEpisode, (status) => {
 .anime-detail-wrapper {
   margin-top: 60px;
 }
-.info-line {
-  margin-top: 10px;
-  line-height: 16px;
-  color: black;
-  font-weight: 600;
-  font-style: normal;
-}
 .info-line-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5px;
-}
-.info-title {
-  color: #5b5ea6;
 }
 </style>

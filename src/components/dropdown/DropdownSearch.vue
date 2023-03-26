@@ -22,6 +22,10 @@ const redirectToInfoPage = (title: string, id: number) => {
   router.push(`/info/${convertToSlug(title)}?id=${id}`);
   emit('closeDropdown')
 };
+const redirectToSearchPage = (keyword : string) => {
+  router.push(`/filter/search?keyword=${keyword}`)
+  emit('closeDropdown')
+}
 </script>
 
 <template>
@@ -55,7 +59,7 @@ const redirectToInfoPage = (title: string, id: number) => {
         ></v-list-item>
       </v-list>
       <v-card-actions style="position: absolute; bottom: 5px; right: 0px">
-        <v-btn variant="flat" color="error" @click="router.push(`/filter/search?keyword=${keyword}`)">See more</v-btn>
+        <v-btn variant="flat" color="error" @click="redirectToSearchPage(keyword)">See more</v-btn>
       </v-card-actions>
     </v-card>
     <v-card

@@ -26,8 +26,8 @@ defineProps({
         v-slot="{ isSelected }"
       >
         <film-card
-          :height="171"
-          :width="121"
+          :height="251"
+          :width="162.9"
           :isSelected="isSelected"
           :item="item"
         ></film-card>

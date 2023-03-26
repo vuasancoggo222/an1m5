@@ -1,13 +1,13 @@
 import config from "./config";
 
 export const searchFunction = (
-    query : string,
-    page : number,
-    perPage : number,
-    season : string,
-    format : string,
-    genres : string,
-    year : string ) => {
+    query : string  = "",
+    page : number = 1,
+    perPage : number = 20,
+    season : string = "",
+    format : string = "",
+    genres : string = "",
+    year : string = "" ) => {
         let url = `advanced-search?query=${query}&page=${page}&perPage=${perPage}`
         const optionalQuery:any = {season,format,genres,year}
         for(const query in optionalQuery){
@@ -17,4 +17,4 @@ export const searchFunction = (
         }
         return config.get(url)
     }
-export const searchAnimeByGenresFunction =  (genres: string) => config.get(`advanced-search?genres=["${genres}"]`)
+export const searchAnimeByGenresFunction =  (genres: any,perPage : number) => config.get(`advanced-search?genres=["${genres}"]&perPage=${perPage}`)

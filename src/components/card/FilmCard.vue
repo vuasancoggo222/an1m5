@@ -32,10 +32,10 @@ defineProps({
           <div class="title-information">
             <v-card-subtitle>
               <v-chip label>
-                {{ item?.episodeNumber || item?.totalEpisodes }}
+                {{ item?.episodeNumber || item?.totalEpisodes || item?.episodes || "Updating" }}
               </v-chip>
             </v-card-subtitle>
-            <v-card-title>{{item?.title.romaji || item?.title.userPreferred }}</v-card-title>
+            <v-card-title class="film-card-title">{{item?.title.romaji || item?.title.userPreferred }}</v-card-title>
           </div>
           <div class="slide-image">
             <v-img
@@ -77,9 +77,12 @@ defineProps({
   top: 0px;
 
   opacity: 1;
-  filter: contrast(70%);
-}
+  filter:brightness(75%);
 
+}
+.film-card-title {
+  font-weight: bold;
+}
 .slide-group-card .title-information .v-card-title {
   position: absolute;
   z-index: 99 !important;

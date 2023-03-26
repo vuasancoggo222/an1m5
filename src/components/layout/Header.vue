@@ -64,7 +64,7 @@ watch(route, (route) => {
   currentTabs.value = route.path;
 });
 const redirectByTag = (tag: string) =>
-  router.push(`/filter/generes?type=${convertToSlug(tag)}`);
+  router.push(`/filter/generes?type=${tag}`);
 watch(
   searchQuery,
   () => {
