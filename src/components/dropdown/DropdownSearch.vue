@@ -22,7 +22,7 @@ const redirectToInfoPage = (title: string, id: number) => {
   router.push(`/info/${convertToSlug(title)}?id=${id}`);
   emit('closeDropdown')
 };
-const redirectToSearchPage = (keyword : string) => {
+const redirectToSearchPage = (keyword : any) => {
   router.push(`/filter/search?keyword=${keyword}`)
   emit('closeDropdown')
 }
