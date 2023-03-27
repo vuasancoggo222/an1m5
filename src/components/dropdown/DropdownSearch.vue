@@ -19,7 +19,7 @@ defineProps({
 const emit = defineEmits (['closeDropdown'])
 const router = useRouter();
 const redirectToInfoPage = (title: string, id: number) => {
-  router.push(`/info/${convertToSlug(title)}?id=${id}`);
+  router.push(`/watch/${convertToSlug(title)}?id=${id}`);
   emit('closeDropdown')
 };
 const redirectToSearchPage = (keyword : any) => {

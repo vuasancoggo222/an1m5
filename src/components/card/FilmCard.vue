@@ -25,7 +25,7 @@ defineProps({
           :width="width"
           @click="
             router.push(
-              `/info/${convertToSlug(item?.title.romaji || item?.title.userPreferred)}?id=${item?.id}`
+              `/watch/${convertToSlug(item?.title.romaji || item?.title.userPreferred)}?id=${item?.id}`
             )
           "
         >

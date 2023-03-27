@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/pages/Home.vue";
-import NotFound from '@/pages/404Page.vue'
+import NotFound from "@/pages/404Page.vue";
 const router = createRouter({
   scrollBehavior() {
-    return { top: 0 };
+    return { top: window.pageYOffset ?? 0, behavior: "smooth" };
   },
   history: createWebHistory(),
   routes: [
@@ -18,7 +18,7 @@ const router = createRouter({
       component: () => import("@/pages/MostPopular.vue"),
     },
     {
-      path: "/info/:title",
+      path: "/watch/:title",
       name: "Anime Info",
       component: () => import("@/pages/AnimeInfo.vue"),
     },
@@ -30,13 +30,13 @@ const router = createRouter({
     {
       path: "/schedule",
       name: "Schedule",
-      component: () => import("@/pages/Schedule.vue")
+      component: () => import("@/pages/Schedule.vue"),
     },
     {
-      path : '/filter/:action',
-      name : 'FilterPage',
-      component : () => import('@/pages/FilterValuePage.vue')
-    }
+      path: "/filter/:action",
+      name: "FilterPage",
+      component: () => import("@/pages/FilterValuePage.vue"),
+    },
   ],
 });
 

@@ -1,12 +1,26 @@
 <script setup lang="ts">
 import { getAnimeInfoFunction } from "@/api/anime-info";
 import CustomCard from "@/components/card/CustomCard.vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import convertToHours from "@/helper/convertToHours";
+import moment from 'moment'
 import { useRoute, useRouter } from "vue-router";
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
 import InfoLine from "@/components/line/InfoLine.vue";
+import Hls from 'hls.js';
+const video = ref()
+
 const isLatestEpisode = ref<boolean>(false);
+onMounted(() =>{
+  if (Hls.isSupported()) {
+  const hls = new Hls();
+  hls.loadSource('https://tc-002.adesicdn.com/1ab5d45273a9183bebb58eb74d5722d8ea6384f350caf008f08cf018f1f0566d0cb82a2a799830d1af97cd3f4b6a9a81ef3aed2fb783292b1abcf1b8560a1d1aa308008b88420298522a9f761e5aa1024fbe74e5aa853cfc933cd1219327d1232e91847a185021b184c027f97ae732b3708ee6beb80ba5db6628ced43f1196fe/0789fd4f049c3ca2a49b860ea5d1f456/ep.1.1677591537.480.m3u8');
+  hls.attachMedia(video.value);
+}
+else if (video.value.canPlayType('application/vnd.apple.mpegurl') ) {
+  video.value.src = 'https://tc-002.adesicdn.com/1ab5d45273a9183bebb58eb74d5722d8ea6384f350caf008f08cf018f1f0566d0cb82a2a799830d1af97cd3f4b6a9a81ef3aed2fb783292b1abcf1b8560a1d1aa308008b88420298522a9f761e5aa1024fbe74e5aa853cfc933cd1219327d1232e91847a185021b184c027f97ae732b3708ee6beb80ba5db6628ced43f1196fe/0789fd4f049c3ca2a49b860ea5d1f456/ep.1.1677591537.480.m3u8';
+}
+})
 const animeInfo = ref<any>({});
 const route = useRoute();
 const router = useRouter();
@@ -34,14 +48,24 @@ watch(
   },
   { immediate: true }
 );
+watch(
+  () => route.query.episodeId,
+  () => {
+    window.scrollTo(0,500)
+    console.log(window);
+    
+  },
+  { immediate: true }
+);
 watch(isLatestEpisode, (status) => {
   if (status) animeEpisodes.value = animeInfo.value.episodes.reverse();
   else animeEpisodes.value = animeInfo.value.episodes.reverse();
 });
+
 </script>
 
 <template>
-  <div v-if="!isLoading">
+  <div  v-if="!isLoading">
     <div class="info-breadcrum">
       <router-link to="/">Home</router-link> /
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
@@ -61,7 +85,7 @@ watch(isLatestEpisode, (status) => {
         <h2 class="mb-4 info-title">
           {{ animeInfo?.title?.romaji || animeInfo?.title?.english }}
         </h2>
-        <div class="infomation-content">
+        <div v-if="!route.query.episodeId" class="infomation-content">
           <div class="info-image-wrapper">
             <img :src="animeInfo.image" alt="" />
           </div>
@@ -113,13 +137,10 @@ watch(isLatestEpisode, (status) => {
                 <InfoLine title="Type" :data=" animeInfo.type "/>
                 
                 <InfoLine title="Start date">
-                  <span
-                    v-if="animeInfo.startDate?.year"
-                    >{{ animeInfo?.startDate?.day }}/{{
-                      animeInfo?.startDate?.month
-                    }}/{{ animeInfo?.startDate?.year }}</span
-                  >
-                  <span v-else> Updating</span>
+                  <span v-if="animeInfo.startDate.year">
+                {{   moment(animeInfo.startDate).format('DD/MM/YYYY') }}
+                   </span>
+                  <span v-else > Updating</span>
                 </InfoLine >
                 
               </div>
@@ -145,6 +166,10 @@ watch(isLatestEpisode, (status) => {
             ></iframe>
           </div>
         </div>
+        <div v-else>
+         <video ref="video"></video>
+          
+        </div>
         <div>
           <v-chip color="blue" label text-color="white">
             <v-icon start icon="mdi-label"></v-icon>
@@ -160,9 +185,9 @@ watch(isLatestEpisode, (status) => {
           <div class="mt-4">
             <v-btn
               width="56"
-              @click="router.push(`/watch/${episode.id}`)"
+              @click="router.replace({path : route.fullPath,params : route.params,query : {...route.query, episodeId : episode.id}})"
               class="ma-2"
-              color="error"
+              :color="route.query.episodeId == episode.id ? 'primary'  :'error' "
               size="small"
               v-for="episode in animeEpisodes"
               >{{ episode.number }}</v-btn
@@ -170,6 +195,7 @@ watch(isLatestEpisode, (status) => {
           </div>
         </div>
       </CustomCard>
+      
     </div>
     <CardSlideGroup
       :data="animeInfo.recommendations"
