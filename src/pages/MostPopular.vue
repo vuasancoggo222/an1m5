@@ -5,6 +5,9 @@ import { ref, watch } from "vue";
 import convertToSlug from "@/helper/convertToSlug";
 import useDebounce from "@/uses/useDebounce";
 import { useRouter } from "vue-router";
+import TagGroup from "@/components/TagGroup.vue";
+import useRedirectRouter from '@/uses/useRedirectRouter'
+const {redirectByTag} = useRedirectRouter()
 const router = useRouter();
 const { debounce } = useDebounce();
 const isShowButton = ref(false);
@@ -55,13 +58,9 @@ watch(
               ><br />
               <span>Status : {{ item.status }}</span>
             </div>
-            <v-chip-group class="genres">
-              <v-chip
-                @click="router.push(`/genres/${convertToSlug(chip)}`)"
-                v-for="chip in item.genres"
-                >{{ chip }}</v-chip
-              >
-            </v-chip-group>
+            <TagGroup :tag-data="item.genres" @onRedirect="redirectByTag"/>
+           
+
           </div>
         </v-card>
       </div>

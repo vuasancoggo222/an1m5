@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { getAnimeInfoFunction } from "@/api/anime-info";
 import CustomCard from "@/components/card/CustomCard.vue";
-import { onMounted, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import convertToHours from "@/helper/convertToHours";
 import moment from "moment";
-import { useRoute, useRouter } from "vue-router";
+import { LocationQueryValue, useRoute, useRouter } from "vue-router";
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
 import InfoLine from "@/components/line/InfoLine.vue";
 // @ts-ignore
 import Hls from "hls.js/dist/hls.min.js";
 import { getAnimeStreamFunction } from "@/api/anime-stream";
 import { useMediaControls } from "@vueuse/core";
-
+import useRedirectRouter from '@/uses/useRedirectRouter'
+import TagGroup from "@/components/TagGroup.vue";
+const {redirectByTag} = useRedirectRouter()
 const video: any = ref(null);
 const { playing, currentTime, volume } = useMediaControls(video);
+
 const videoOptions = reactive({
   source: "",
   quality: "",
@@ -29,7 +32,7 @@ const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(false);
 const animeEpisodes = ref<any>();
-
+  const episodeInfo = computed(() => animeEpisodes.value.find((item: { id: LocationQueryValue | LocationQueryValue[]; })  => item.id == route.query.episodeId)) 
 const getAnimeInfo = async () => {
   try {
     isLoading.value = true;
@@ -37,6 +40,8 @@ const getAnimeInfo = async () => {
       const { data } = await getAnimeInfoFunction(route.query.id);
       isLoading.value = false;
       animeInfo.value = data;
+      
+      
       animeEpisodes.value = data.episodes;
     }
   } catch (error) {
@@ -150,15 +155,8 @@ watch(isLatestEpisode, (status) => {
               </v-chip>
             </div>
             <div>
-              <v-chip-group>
-                <v-chip
-                  style="background-color: #7149c6; color: #fff"
-                  v-for="genre in animeInfo.genres"
-                  :key="genre"
-                >
-                  {{ genre }}
-                </v-chip>
-              </v-chip-group>
+              <TagGroup :tag-data="animeInfo.genres" @onRedirect="redirectByTag" :custom="'background-color: #7149c6; color: #fff'"/>
+             
               <div class="info-line-wrapper">
                 <InfoLine title="Studio">
                   <span
@@ -202,7 +200,7 @@ watch(isLatestEpisode, (status) => {
           </div>
         </div>
         <CustomCard
-          title="Dororo episode 2"
+          :title="episodeInfo.title"
           icon="mdi-movie"
           class="my-6 video-player"
           @keydown.bottom="volume -= 0.1"
@@ -219,6 +217,7 @@ watch(isLatestEpisode, (status) => {
               height="400"
               @click="playing = !playing"
               controls
+              :poster="episodeInfo.image"
             ></video>
           </div>
           <div style="display: flex; justify-content: center" class="my-3">

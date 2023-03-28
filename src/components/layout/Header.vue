@@ -9,7 +9,7 @@ import { searchFunction } from "@/api/search";
 import useDebounce from "@/uses/useDebounce";
 import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
-import convertToSlug from "@/helper/convertToSlug";
+const {redirectByTag} = useRedirectRouter()
 const route = useRoute();
 const router = useRouter();
 const { redirectRouter } = useRedirectRouter();
@@ -63,8 +63,6 @@ const getRandomAnime = () => {};
 watch(route, (route) => {
   currentTabs.value = route.path;
 });
-const redirectByTag = (tag: string) =>
-  router.push(`/filter/generes?type=${tag}`);
 watch(
   searchQuery,
   () => {
