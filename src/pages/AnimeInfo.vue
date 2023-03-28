@@ -1,31 +1,35 @@
 <script setup lang="ts">
 import { getAnimeInfoFunction } from "@/api/anime-info";
 import CustomCard from "@/components/card/CustomCard.vue";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import convertToHours from "@/helper/convertToHours";
-import moment from 'moment'
+import moment from "moment";
 import { useRoute, useRouter } from "vue-router";
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
 import InfoLine from "@/components/line/InfoLine.vue";
-import Hls from 'hls.js';
-const video = ref()
+// @ts-ignore
+import Hls from "hls.js/dist/hls.min.js";
+import { getAnimeStreamFunction } from "@/api/anime-stream";
+import { useMediaControls } from "@vueuse/core";
 
+const video: any = ref(null);
+const { playing, currentTime, volume } = useMediaControls(video);
+const videoOptions = reactive({
+  source: "",
+  quality: "",
+});
+onMounted(() => {
+  getPreviousCurrentTime();
+});
+const episodeData = ref<any>();
 const isLatestEpisode = ref<boolean>(false);
-onMounted(() =>{
-  if (Hls.isSupported()) {
-  const hls = new Hls();
-  hls.loadSource('https://tc-002.adesicdn.com/1ab5d45273a9183bebb58eb74d5722d8ea6384f350caf008f08cf018f1f0566d0cb82a2a799830d1af97cd3f4b6a9a81ef3aed2fb783292b1abcf1b8560a1d1aa308008b88420298522a9f761e5aa1024fbe74e5aa853cfc933cd1219327d1232e91847a185021b184c027f97ae732b3708ee6beb80ba5db6628ced43f1196fe/0789fd4f049c3ca2a49b860ea5d1f456/ep.1.1677591537.480.m3u8');
-  hls.attachMedia(video.value);
-}
-else if (video.value.canPlayType('application/vnd.apple.mpegurl') ) {
-  video.value.src = 'https://tc-002.adesicdn.com/1ab5d45273a9183bebb58eb74d5722d8ea6384f350caf008f08cf018f1f0566d0cb82a2a799830d1af97cd3f4b6a9a81ef3aed2fb783292b1abcf1b8560a1d1aa308008b88420298522a9f761e5aa1024fbe74e5aa853cfc933cd1219327d1232e91847a185021b184c027f97ae732b3708ee6beb80ba5db6628ced43f1196fe/0789fd4f049c3ca2a49b860ea5d1f456/ep.1.1677591537.480.m3u8';
-}
-})
+let hls: any | null = null;
 const animeInfo = ref<any>({});
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(false);
 const animeEpisodes = ref<any>();
+
 const getAnimeInfo = async () => {
   try {
     isLoading.value = true;
@@ -37,6 +41,32 @@ const getAnimeInfo = async () => {
     }
   } catch (error) {
     console.log(error);
+  }
+};
+const getPreviousCurrentTime = () => {
+  if (localStorage.getItem(`${route.query.episodeId}-current-time`)) {
+    currentTime.value = Number(
+      localStorage.getItem(`${route.query.episodeId}-current-time`)
+    );
+  }
+};
+const getAnimeEpisode = async () => {
+  try {
+    const { data } = await getAnimeStreamFunction(route.query.episodeId as any);
+    episodeData.value = data;
+    getStream(episodeData.value.sources[3]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getStream = (source: any) => {
+  videoOptions.source = source.url;
+  videoOptions.quality = source.quality;
+  let stream = `https://corsanywhere.herokuapp.com/${source.url}`;
+  if (Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(stream);
+    hls.attachMedia(video.value);
   }
 };
 watch(
@@ -51,9 +81,9 @@ watch(
 watch(
   () => route.query.episodeId,
   () => {
-    window.scrollTo(0,500)
-    console.log(window);
-    
+    if (route.query.episodeId) {
+      getAnimeEpisode();
+    }
   },
   { immediate: true }
 );
@@ -61,11 +91,10 @@ watch(isLatestEpisode, (status) => {
   if (status) animeEpisodes.value = animeInfo.value.episodes.reverse();
   else animeEpisodes.value = animeInfo.value.episodes.reverse();
 });
-
 </script>
 
 <template>
-  <div  v-if="!isLoading">
+  <div v-if="!isLoading">
     <div class="info-breadcrum">
       <router-link to="/">Home</router-link> /
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
@@ -92,22 +121,28 @@ watch(isLatestEpisode, (status) => {
           <div v-if="animeInfo" class="info-episode">
             <div class="mb-4">
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-               <span v-if="animeInfo.currentEpisode || animeInfo.totalEpisodes">
-                {{ animeInfo.currentEpisode }} / {{ animeInfo.totalEpisodes }} 
-               </span>
-               <span v-else>Updating</span>
+                <span
+                  v-if="animeInfo.currentEpisode || animeInfo.totalEpisodes"
+                >
+                  {{ animeInfo.currentEpisode }} / {{ animeInfo.totalEpisodes }}
+                </span>
+                <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" color="pink">
                 <v-icon start icon="mdi-clock-time-eight"></v-icon>
-                <span v-if="animeInfo.duration">{{ convertToHours(animeInfo.duration) }}</span>
+                <span v-if="animeInfo.duration">{{
+                  convertToHours(animeInfo.duration)
+                }}</span>
                 <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-                <span v-if="animeInfo.releaseDate">{{ animeInfo.releaseDate }}</span>
+                <span v-if="animeInfo.releaseDate">{{
+                  animeInfo.releaseDate
+                }}</span>
                 <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-             <span v-if="animeInfo.season">   {{ animeInfo.season }}</span>
+                <span v-if="animeInfo.season"> {{ animeInfo.season }}</span>
                 <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" icon="mdi-update">
@@ -125,24 +160,24 @@ watch(isLatestEpisode, (status) => {
                 </v-chip>
               </v-chip-group>
               <div class="info-line-wrapper">
-              <InfoLine title="Studio">
-                <span v-if="animeInfo.studios.length" v-for="studio in animeInfo.studios">{{
-                    studio.toUpperCase()
-                  }}</span>
-                <span v-else>Updating</span>
-              </InfoLine>
-                <InfoLine title="Status" :data="animeInfo.status"/>
-                
-                
-                <InfoLine title="Type" :data=" animeInfo.type "/>
-                
+                <InfoLine title="Studio">
+                  <span
+                    v-if="animeInfo.studios.length"
+                    v-for="studio in animeInfo.studios"
+                    >{{ studio.toUpperCase() }}</span
+                  >
+                  <span v-else>Updating</span>
+                </InfoLine>
+                <InfoLine title="Status" :data="animeInfo.status" />
+
+                <InfoLine title="Type" :data="animeInfo.type" />
+
                 <InfoLine title="Start date">
                   <span v-if="animeInfo.startDate.year">
-                {{   moment(animeInfo.startDate).format('DD/MM/YYYY') }}
-                   </span>
-                  <span v-else > Updating</span>
-                </InfoLine >
-                
+                    {{ moment(animeInfo.startDate).format("DD/MM/YYYY") }}
+                  </span>
+                  <span v-else> Updating</span>
+                </InfoLine>
               </div>
               <div
                 style="color: black; font-size: 14px"
@@ -166,10 +201,38 @@ watch(isLatestEpisode, (status) => {
             ></iframe>
           </div>
         </div>
-        <div v-else>
-         <video ref="video"></video>
-          
-        </div>
+        <CustomCard
+          title="Dororo episode 2"
+          icon="mdi-movie"
+          class="my-6 video-player"
+          @keydown.bottom="volume -= 0.1"
+          @keydown.top="volume += 0.1"
+          @keydown.right="currentTime += 10"
+          @keydown.left="currentTime -= 10"
+          v-else
+        >
+          <div class="video-container">
+            <video
+              ref="video"
+              width="700"
+              height="400"
+              @click="playing = !playing"
+              controls
+            ></video>
+          </div>
+          <div style="display: flex; justify-content: center" class="my-3">
+            <v-btn
+              size="small"
+              :color="
+                videoOptions.quality == item.quality ? 'error' : 'success'
+              "
+              class="mx-2"
+              @click="getStream(item)"
+              v-for="item in episodeData?.sources"
+              >{{ item.quality }}</v-btn
+            >
+          </div>
+        </CustomCard>
         <div>
           <v-chip color="blue" label text-color="white">
             <v-icon start icon="mdi-label"></v-icon>
@@ -185,9 +248,30 @@ watch(isLatestEpisode, (status) => {
           <div class="mt-4">
             <v-btn
               width="56"
-              @click="router.replace({path : route.fullPath,params : route.params,query : {...route.query, episodeId : episode.id}})"
+              @click="
+                router.replace({
+                  path: route.fullPath,
+                  params: route.params,
+                  query: { id: route.query.id },
+                })
+              "
               class="ma-2"
-              :color="route.query.episodeId == episode.id ? 'primary'  :'error' "
+              color="success"
+              size="small"
+            >
+              Info</v-btn
+            >
+            <v-btn
+              width="56"
+              @click="
+                router.replace({
+                  path: route.fullPath,
+                  params: route.params,
+                  query: { ...route.query, episodeId: episode.id },
+                })
+              "
+              class="ma-2"
+              :color="route.query.episodeId == episode.id ? 'primary' : 'error'"
               size="small"
               v-for="episode in animeEpisodes"
               >{{ episode.number }}</v-btn
@@ -195,7 +279,6 @@ watch(isLatestEpisode, (status) => {
           </div>
         </div>
       </CustomCard>
-      
     </div>
     <CardSlideGroup
       :data="animeInfo.recommendations"
@@ -251,5 +334,14 @@ watch(isLatestEpisode, (status) => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5px;
+}
+.video-player {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+.video-container {
+  position: relative;
 }
 </style>

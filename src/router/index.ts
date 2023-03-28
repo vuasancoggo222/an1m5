@@ -2,9 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/pages/Home.vue";
 import NotFound from "@/pages/404Page.vue";
 const router = createRouter({
-  scrollBehavior() {
-    return { top: window.pageYOffset ?? 0, behavior: "smooth" };
-  },
+ 
   history: createWebHistory(),
   routes: [
     {
