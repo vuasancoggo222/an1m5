@@ -213,6 +213,7 @@ watch(isLatestEpisode, (status) => {
         >
           <div class="video-container">
             <video
+              id="video"
               ref="video"
               width="700"
               height="400"
@@ -230,6 +231,11 @@ watch(isLatestEpisode, (status) => {
               @click="getStream(item)"
               v-for="item in episodeData?.sources"
               >{{ item.quality }}</v-btn
+            >
+            <v-btn size="small" color="error" class="mx-2"
+              ><a :href="episodeData?.download" style="color: white"
+                >Download</a
+              ></v-btn
             >
           </div>
         </CustomCard>

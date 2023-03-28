@@ -6,6 +6,16 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: "/filter/:action",
+      name: "FilterPage",
+      component: () => import("@/pages/FilterValuePage.vue"),
+    },
+    {
+      path: "/watch/:title",
+      name: "Anime Info",
+      component: () => import("@/pages/AnimeInfo.vue"),
+    },
+    {
       path: "/",
       name: "Home",
       component: Home,
@@ -14,11 +24,6 @@ const router = createRouter({
       path: "/most-popular",
       name: "Most Popular",
       component: () => import("@/pages/MostPopular.vue"),
-    },
-    {
-      path: "/watch/:title",
-      name: "Anime Info",
-      component: () => import("@/pages/AnimeInfo.vue"),
     },
     {
       path: "/:pathMatch(.*)*",
@@ -30,11 +35,7 @@ const router = createRouter({
       name: "Schedule",
       component: () => import("@/pages/Schedule.vue"),
     },
-    {
-      path: "/filter/:action",
-      name: "FilterPage",
-      component: () => import("@/pages/FilterValuePage.vue"),
-    },
+  
   ],
 });
 
