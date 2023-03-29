@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { defineAsyncComponent, watch } from "vue";
-import Footer from "./components/layout/Footer.vue";
+import An1m5Footer from "./components/layout/An1m5Footer.vue";
 import { useRoute } from "vue-router";
 import { useTitle } from "@vueuse/core";
+
 const route = useRoute();
-const Header = defineAsyncComponent(
-  () => import("@/components/layout/Header.vue")
+const An1m5Header = defineAsyncComponent(
+  () => import("@/components/layout/An1m5Header.vue")
 );
 const title: any = useTitle();
 watch(
@@ -19,10 +20,10 @@ watch(
 <template>
   <div class="wrapper">
     <v-container class="container">
-      <header />
+      <An1m5Header />
       <router-view />
     </v-container>
-    <footer v-if="route.name !== 'Home'" />
+    <An1m5Footer v-if="route.name !== 'Home'" />
   </div>
 </template>
 

@@ -10,16 +10,11 @@ import useDebounce from "@/uses/useDebounce";
 import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
 import { useColorMode, useDark } from "@vueuse/core";
-// @ts-ignore
-import { vOnClickOutside } from '@vueuse/components'
+import { onClickOutside } from '@vueuse/core'
 const isDark = useDark();
-useColorMode({
-  attribute: "theme",
-});
-
+const dropdown = ref(null)
 const { redirectByTag } = useRedirectRouter();
 const route = useRoute();
-
 const { redirectRouter } = useRedirectRouter();
 const currentTabs = ref<string>(route.path);
 const searchData = reactive<any>({});
@@ -36,6 +31,10 @@ const searchQuery = reactive({
   year: "",
 });
 const isSearching = ref(false);
+useColorMode({
+  attribute: "theme",
+});
+onClickOutside(dropdown, () => closeSearchDropdown(false) )
 const showHideDropdown = () => {
   if (searchQuery.query) openSearchDropdown.value = true;
   else openSearchDropdown.value = false;
@@ -100,6 +99,7 @@ watch(
     <div class="search-wrapper" style="position: relative">
       <input class="search-input" v-model="searchQuery.query" type="text" />
       <dropdown-search
+      ref="dropdown"
         v-on-click-outside="closeSearchDropdown"
         @closeDropdown="closeSearchDropdown"
         :dropdown-items="searchData"
