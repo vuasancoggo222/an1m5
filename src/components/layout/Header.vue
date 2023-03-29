@@ -27,12 +27,13 @@ const searchQuery = reactive({
   genres: "",
   year: "",
 });
-
+const isSearching = ref(false)
 const showHideDropdown = () => {
   if (searchQuery.query) openSearchDropdown.value = true;
   else openSearchDropdown.value = false;
 };
 const getSearchData = async () => {
+  isSearching.value = true
   try {
     if (searchQuery.query !== "" ?? null) {
       const { query, page, perPage, season, format, genres, year } =
@@ -47,9 +48,11 @@ const getSearchData = async () => {
         year
       );
       searchData.response = data;
+      isSearching.value = false
     }
   } catch (error) {
     console.log(error);
+    isSearching.value = false
   }
 };
 const closeSearchDropdown = (reset: boolean) => {
@@ -92,6 +95,7 @@ watch(
           @closeDropdown="closeSearchDropdown"
           :dropdown-items="searchData"
           :keyword="searchQuery.query"
+          :searching="isSearching"
           class="search-dropdown"
           :open="openSearchDropdown"
           :width="320"

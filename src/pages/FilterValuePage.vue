@@ -74,7 +74,7 @@ watch(
     :title="title"
     :icon="action == 'generes' ? 'mdi-tag' : 'mdi-search-web'"
   >
-    <div class="trending-anime-grid">
+    <div v-if="animeData.length" class="trending-anime-grid">
       <FilmCard
         v-for="item in animeData"
         :width="242"
@@ -83,6 +83,7 @@ watch(
         :height="200"
       />
     </div>
+    <div v-else class="empty-anime">No anime data found.</div>
     <div class="see-more">
       <v-btn
         v-if="hasNextPage"
@@ -100,5 +101,10 @@ watch(
   margin: 10px 0;
   display: flex;
   justify-content: center;
+}
+.empty-anime {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

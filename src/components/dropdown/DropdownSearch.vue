@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import convertToSlug from "@/helper/convertToSlug";
-
+import ProgressCircle from "../progess/ProgressCircle.vue";
 defineProps({
   open: {
     type: Boolean,
@@ -14,6 +14,9 @@ defineProps({
   },
   keyword:{
     type : String
+  },
+  searching : {
+    type : Boolean
   }
 });
 const emit = defineEmits (['closeDropdown'])
@@ -48,7 +51,7 @@ const redirectToSearchPage = (keyword : any) => {
         variant="text"
         style="position: absolute; right: 5px; top: 10px; z-index: 2"
       ></v-btn>
-      <v-list lines="one">
+      <v-list v-if="!searching" lines="one">
         <v-list-item
           @click="redirectToInfoPage(item.title.romaji || item.title.userPreferred, item.id)"
           class="search-items"
@@ -58,6 +61,9 @@ const redirectToSearchPage = (keyword : any) => {
           :prepend-avatar="item.image"
         ></v-list-item>
       </v-list>
+      <div v-else class="dropdown-loading">
+        <progress-circle color="error" :indeterminate="true"></progress-circle>
+      </div>
       <v-card-actions style="position: absolute; bottom: 5px; right: 0px">
         <v-btn variant="flat" color="error" @click="redirectToSearchPage(keyword)">See more</v-btn>
       </v-card-actions>
@@ -81,5 +87,11 @@ const redirectToSearchPage = (keyword : any) => {
 .search-items .v-list-item-title {
   font-size: 12px !important;
   font-weight: bold !important;
+}
+.dropdown-loading{
+  margin-top: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

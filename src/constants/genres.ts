@@ -17,4 +17,5 @@ export const genres = [
   "Sports",
   "Supernatural",
   "Thriller",
+  "Ecchi"
 ];

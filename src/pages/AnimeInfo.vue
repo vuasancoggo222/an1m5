@@ -11,9 +11,9 @@ import InfoLine from "@/components/line/InfoLine.vue";
 import Hls from "hls.js/dist/hls.min.js";
 import { getAnimeStreamFunction } from "@/api/anime-stream";
 import { useMediaControls } from "@vueuse/core";
-import useRedirectRouter from '@/uses/useRedirectRouter'
+import useRedirectRouter from "@/uses/useRedirectRouter";
 import TagGroup from "@/components/TagGroup.vue";
-const {redirectByTag} = useRedirectRouter()
+const { redirectByTag } = useRedirectRouter();
 const video: any = ref(null);
 const { playing, currentTime, volume } = useMediaControls(video);
 
@@ -32,7 +32,12 @@ const route = useRoute();
 const router = useRouter();
 const isLoading = ref<boolean>(false);
 const animeEpisodes = ref<any>();
-  const episodeInfo = computed(() => animeEpisodes.value.find((item: { id: LocationQueryValue | LocationQueryValue[]; })  => item.id == route.query.episodeId)) 
+const episodeInfo = computed(() =>
+  animeEpisodes.value.find(
+    (item: { id: LocationQueryValue | LocationQueryValue[] }) =>
+      item.id == route.query.episodeId
+  )
+);
 const getAnimeInfo = async () => {
   try {
     isLoading.value = true;
@@ -40,8 +45,7 @@ const getAnimeInfo = async () => {
       const { data } = await getAnimeInfoFunction(route.query.id);
       isLoading.value = false;
       animeInfo.value = data;
-      
-      
+
       animeEpisodes.value = data.episodes;
     }
   } catch (error) {
@@ -155,8 +159,12 @@ watch(isLatestEpisode, (status) => {
               </v-chip>
             </div>
             <div>
-              <TagGroup :tag-data="animeInfo.genres" @onRedirect="redirectByTag" :custom="'background-color: #7149c6; color: #fff'"/>
-             
+              <TagGroup
+                :tag-data="animeInfo.genres"
+                @onRedirect="redirectByTag"
+                :custom="'background-color: #7149c6; color: #fff'"
+              />
+
               <div class="info-line-wrapper">
                 <InfoLine title="Studio">
                   <span
