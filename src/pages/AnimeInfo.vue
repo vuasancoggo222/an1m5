@@ -105,7 +105,7 @@ watch(isLatestEpisode, (status) => {
 <template>
   <div v-if="!isLoading">
     <div class="info-breadcrum">
-      <router-link to="/">Home</router-link> /
+      <span style="cursor:pointer" @click="router.push('/')">Home</span> /
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
     </div>
     <div class="banner-wrapper">
@@ -119,7 +119,7 @@ watch(isLatestEpisode, (status) => {
       ></v-img>
     </div>
     <div class="anime-detail-wrapper">
-      <CustomCard title="Anime information" icon="mdi-information">
+      <custom-card title="Anime information" icon="mdi-information">
         <h2 class="mb-4 info-title">
           {{ animeInfo?.title?.romaji || animeInfo?.title?.english }}
         </h2>
@@ -159,31 +159,31 @@ watch(isLatestEpisode, (status) => {
               </v-chip>
             </div>
             <div>
-              <TagGroup
+              <tag-group
                 :tag-data="animeInfo.genres"
                 @onRedirect="redirectByTag"
                 :custom="'background-color: #7149c6; color: #fff'"
               />
 
               <div class="info-line-wrapper">
-                <InfoLine title="Studio">
+                <info-line title="Studio">
                   <span
                     v-if="animeInfo.studios.length"
                     v-for="studio in animeInfo.studios"
                     >{{ studio.toUpperCase() }}</span
                   >
                   <span v-else>Updating</span>
-                </InfoLine>
-                <InfoLine title="Status" :data="animeInfo.status" />
+                </info-line>
+                <info-line title="Status" :data="animeInfo.status" />
 
-                <InfoLine title="Type" :data="animeInfo.type" />
+                <info-line title="Type" :data="animeInfo.type" />
 
-                <InfoLine title="Start date">
+                <info-line title="Start date">
                   <span v-if="animeInfo.startDate.year">
                     {{ moment(animeInfo.startDate).format("DD/MM/YYYY") }}
                   </span>
                   <span v-else> Updating</span>
-                </InfoLine>
+                </info-line>
               </div>
               <div
                 style="color: black; font-size: 14px"
@@ -207,7 +207,7 @@ watch(isLatestEpisode, (status) => {
             ></iframe>
           </div>
         </div>
-        <CustomCard
+        <custom-card
           :title="episodeInfo.title"
           icon="mdi-movie"
           class="my-6 video-player"
@@ -245,7 +245,7 @@ watch(isLatestEpisode, (status) => {
               ></v-btn
             >
           </div>
-        </CustomCard>
+        </custom-card>
         <div>
           <v-chip color="blue" label text-color="white">
             <v-icon start icon="mdi-label"></v-icon>
@@ -291,15 +291,15 @@ watch(isLatestEpisode, (status) => {
             >
           </div>
         </div>
-      </CustomCard>
+      </custom-card>
     </div>
-    <CardSlideGroup
+    <card-slide-group
       :data="animeInfo.recommendations"
       card-title="Recommendations anime"
       card-title-icon="mdi-history"
       :style="!isLoading ? '' : 'opacity : 0.5'"
     />
-    <CardSlideGroup
+    <card-slide-group
       :data="animeInfo.relations"
       card-title="Relations anime"
       card-title-icon="mdi-history"

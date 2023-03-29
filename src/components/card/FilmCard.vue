@@ -18,7 +18,7 @@ defineProps({
 
 <template>
    <v-card
-          style="position: relative"
+          style="position: relative;border-radius: 12px;"
           :color="isSelected ? 'primary' : ''"
           class="slide-group-card"
           :height="height"

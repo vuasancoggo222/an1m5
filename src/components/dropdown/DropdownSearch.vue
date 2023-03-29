@@ -33,10 +33,11 @@ const redirectToSearchPage = (keyword : any) => {
 
 <template>
 
-  <div v-if="open" style="position: absolute; top: 50px; z-index: 9999">
+  <div v-if="open" style="position: absolute; top: 50px;right:0; z-index: 9999">
     <v-card
       style="position: relative"
       v-if="dropdownItems?.response?.totalResults !== 0"
+      
       :width="width"
       height="410"
       :text="`We found ${
@@ -61,8 +62,8 @@ const redirectToSearchPage = (keyword : any) => {
           :prepend-avatar="item.image"
         ></v-list-item>
       </v-list>
-      <div v-else class="dropdown-loading">
-        <progress-circle color="error" :indeterminate="true"></progress-circle>
+      <div v-else style="margin-top: 130px;">
+        <progress-circle  color="error" :indeterminate="true"></progress-circle>
       </div>
       <v-card-actions style="position: absolute; bottom: 5px; right: 0px">
         <v-btn variant="flat" color="error" @click="redirectToSearchPage(keyword)">See more</v-btn>
@@ -87,11 +88,5 @@ const redirectToSearchPage = (keyword : any) => {
 .search-items .v-list-item-title {
   font-size: 12px !important;
   font-weight: bold !important;
-}
-.dropdown-loading{
-  margin-top: 130px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

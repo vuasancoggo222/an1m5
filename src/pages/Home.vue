@@ -33,7 +33,7 @@ getTrendingAnime();
 
 <template>
   <div class="recent-anime-wrapper">
-    <CardSlideGroup
+    <card-slide-group
       :data="recentAnimeData"
       card-title="Recent anime"
       card-title-icon="mdi-history"
@@ -41,7 +41,7 @@ getTrendingAnime();
     />
   </div>
   <div class="mt-12">
-    <CustomCard
+    <custom-card
       @selectValue="trending.$patch({ trendingLimit: Number($event) })"
       title="Trending anime"
       :option="trending.limitOption"
@@ -49,10 +49,10 @@ getTrendingAnime();
       icon="mdi-trending-up"
     >
         <div class="trending-anime-grid">
-          <FilmCard v-for="item in trendingAnime" :width="242" :item="item" :key="item.id" :height="200"/>
+          <film-card v-for="item in trendingAnime" :width="242" :item="item" :key="item.id" :height="200"/>
          
         </div>
-    </CustomCard>
+    </custom-card>
   </div>
   <v-layout class="overflow-visible" style="height: 56px">
     <v-bottom-navigation color="teal" grow>
@@ -75,6 +75,7 @@ getTrendingAnime();
 
 <style>
 .recent-anime-wrapper {
+  
   margin-top: 30px;
 }
 .trending-anime-grid{

@@ -9,7 +9,15 @@ import { searchFunction } from "@/api/search";
 import useDebounce from "@/uses/useDebounce";
 import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
-const {redirectByTag} = useRedirectRouter()
+//@ts-ignore
+import { vOnClickOutside } from '@vueuse/components'
+import { useColorMode, useDark } from "@vueuse/core";
+const isDark = useDark();
+useColorMode({
+  attribute: "theme",
+});
+
+const { redirectByTag } = useRedirectRouter();
 const route = useRoute();
 const router = useRouter();
 const { redirectRouter } = useRedirectRouter();
@@ -27,13 +35,13 @@ const searchQuery = reactive({
   genres: "",
   year: "",
 });
-const isSearching = ref(false)
+const isSearching = ref(false);
 const showHideDropdown = () => {
   if (searchQuery.query) openSearchDropdown.value = true;
   else openSearchDropdown.value = false;
 };
 const getSearchData = async () => {
-  isSearching.value = true
+  isSearching.value = true;
   try {
     if (searchQuery.query !== "" ?? null) {
       const { query, page, perPage, season, format, genres, year } =
@@ -48,11 +56,11 @@ const getSearchData = async () => {
         year
       );
       searchData.response = data;
-      isSearching.value = false
+      isSearching.value = false;
     }
   } catch (error) {
     console.log(error);
-    isSearching.value = false
+    isSearching.value = false;
   }
 };
 const closeSearchDropdown = (reset: boolean) => {
@@ -78,9 +86,10 @@ watch(
 <template>
   <div class="header-wrapper">
     <v-tabs
+      class="header-tab"
       color="deep-purple-accent-4"
       v-model="currentTabs"
-      align-tabs="center"
+      align-tabs="start"
     >
       <template v-for="nav in navLink" :key="nav.name">
         <v-tab :value="nav.path" @click="redirectRouter(nav.path)">{{
@@ -88,20 +97,22 @@ watch(
         }}</v-tab>
       </template>
     </v-tabs>
+    <div class="search-wrapper" style="position: relative">
+      <input class="search-input" v-model="searchQuery.query" type="text" />
+      <dropdown-search
+        v-on-click-outside="closeSearchDropdown"
+        @closeDropdown="closeSearchDropdown"
+        :dropdown-items="searchData"
+        :keyword="searchQuery.query"
+        :searching="isSearching"
+        class="search-dropdown"
+        :open="openSearchDropdown"
+        
+        :width="320"
+        active-color="primary"
+      />
+    </div>
     <div class="side-right-header">
-      <div class="search-wrapper" style="position: relative">
-        <input v-model="searchQuery.query" type="text" />
-        <DropdownSearch
-          @closeDropdown="closeSearchDropdown"
-          :dropdown-items="searchData"
-          :keyword="searchQuery.query"
-          :searching="isSearching"
-          class="search-dropdown"
-          :open="openSearchDropdown"
-          :width="320"
-          active-color="primary"
-        />
-      </div>
       <div class="authenticate-wrapper" v-if="!user">
         <v-btn variant="outlined">Sign in</v-btn>
         <v-btn color="primary" variant="flat">Sign up</v-btn>
@@ -127,11 +138,17 @@ watch(
       </div>
       <v-btn
         @click="getRandomAnime"
-        style="margin-left: 15px"
         variant="outlined"
-        color="error"
-        >Random anime</v-btn
+        style="margin-left: 15px"
+        color="success"
+        >Random</v-btn
       >
+      <v-switch
+        style="margin-left: 15px; flex: none"
+        v-model="isDark"
+        hide-details
+        inset
+      ></v-switch>
     </div>
   </div>
   <tag-group @on-redirect="redirectByTag" :tag-data="genres" />
@@ -141,14 +158,25 @@ watch(
 .header-wrapper {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+.header-tab {
+  flex: 3.3;
 }
 
 .search-wrapper {
-  margin-right: 15px;
+  margin-top: 9px;
+  flex: 3.3;
+  width: 100%;
 }
 
 .search-wrapper input {
-  width: 320px;
+  background-color: #ffff;
+  outline: none;
+  min-width: 320px;
+  width: 100%;
+  
   height: 40px;
   border: 2px solid #cbc0c0;
   border-radius: 12px;
@@ -156,19 +184,12 @@ watch(
   font-size: 14px;
 }
 
-.side-left-header {
-  flex: 7;
-  display: flex;
-  align-items: center;
-}
-
 .side-right-header {
-  flex: 3;
+  flex: 3.3;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
-
 .side-right-header div {
   gap: 15px;
   display: flex;

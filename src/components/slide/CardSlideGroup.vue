@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <v-sheet class="mx-auto mt-12" elevation="6" max-width="100%">
+  <v-sheet class="mx-auto mt-12" style="border-radius: 12px;" elevation="6" max-width="100%">
     <v-chip style="margin: 16px" color="blue" label text-color="white">
       <v-icon start :icon="cardTitleIcon"></v-icon>
       {{ cardTitle }}

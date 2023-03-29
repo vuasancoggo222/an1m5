@@ -44,11 +44,13 @@ const selectValue = (event : any ) => emit('selectValue',event.target.value)
 <style >
 .custom-card {
   padding: 16px;
+  border-radius: 12px;
 }
 .custom-card .card-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+   
 }
 .select-dropdown,
 .select-dropdown * {
