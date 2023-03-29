@@ -9,9 +9,9 @@ import { searchFunction } from "@/api/search";
 import useDebounce from "@/uses/useDebounce";
 import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
-//@ts-ignore
-import { vOnClickOutside } from '@vueuse/components'
 import { useColorMode, useDark } from "@vueuse/core";
+// @ts-ignore
+import { vOnClickOutside } from '@vueuse/components'
 const isDark = useDark();
 useColorMode({
   attribute: "theme",
@@ -19,7 +19,7 @@ useColorMode({
 
 const { redirectByTag } = useRedirectRouter();
 const route = useRoute();
-const router = useRouter();
+
 const { redirectRouter } = useRedirectRouter();
 const currentTabs = ref<string>(route.path);
 const searchData = reactive<any>({});
