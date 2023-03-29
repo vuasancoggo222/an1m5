@@ -96,7 +96,9 @@ watch(
         }}</v-tab>
       </template>
     </v-tabs>
-    <div class="search-wrapper" style="position: relative">
+   
+    <div class="side-right-header">
+      <div class="search-wrapper" style="position: relative">
       <input class="search-input" v-model="searchQuery.query" type="text" />
       <dropdown-search
       ref="dropdown"
@@ -112,7 +114,6 @@ watch(
         active-color="primary"
       />
     </div>
-    <div class="side-right-header">
       <div class="authenticate-wrapper" v-if="!user">
         <v-btn variant="outlined">Sign in</v-btn>
         <v-btn color="primary" variant="flat">Sign up</v-btn>
@@ -136,13 +137,7 @@ watch(
         </v-menu>
         <v-btn icon="mdi-heart" size="small" color="error"></v-btn>
       </div>
-      <v-btn
-        @click="getRandomAnime"
-        variant="outlined"
-        style="margin-left: 15px"
-        color="success"
-        >Random</v-btn
-      >
+    
       <v-switch
         style="margin-left: 15px; flex: none"
         v-model="isDark"
@@ -162,12 +157,11 @@ watch(
   gap: 20px;
 }
 .header-tab {
-  flex: 3.3;
+  flex: 3;
 }
 
 .search-wrapper {
-  margin-top: 9px;
-  flex: 3.3;
+  margin-right: 15px;
   width: 100%;
 }
 
@@ -176,7 +170,6 @@ watch(
   outline: none;
   min-width: 320px;
   width: 100%;
-  
   height: 40px;
   border: 2px solid #cbc0c0;
   border-radius: 12px;
@@ -185,7 +178,7 @@ watch(
 }
 
 .side-right-header {
-  flex: 3.3;
+  flex:6;
   display: flex;
   align-items: center;
   justify-content: flex-end;

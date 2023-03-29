@@ -30,14 +30,16 @@ const getFilterAnime = async () => {
       );
       animeData.value = data.results;
       hasNextPage.value = data.hasNextPage;
+      isLoading.value = false
     } else if (action.value == "search") {
       const { data } = await searchFunction(route.query.keyword as any);
       console.log(data);
       console.log(data.hasNextPage);
       animeData.value = data.results;
       hasNextPage.value = data.hasNextPage;
+      isLoading.value = false
     }
-    isLoading.value = false
+  
   } catch (error) {
     console.log(error);
     isLoading.value = false

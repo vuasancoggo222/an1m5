@@ -223,6 +223,8 @@ watch(isLatestEpisode, (status) => {
               ref="video"
               width="700"
               height="400"
+              preload="metadata"
+              autoplay
               @click="playing = !playing"
               controls
               :poster="episodeInfo.image"
@@ -350,11 +352,13 @@ watch(isLatestEpisode, (status) => {
 }
 .video-player {
   width: 100%;
-
+  background-color: #1e1e20;
   display: flex;
   justify-content: center;
 }
 .video-container {
   position: relative;
+  border: 2px solid #6200ee;
+  border-radius: 6px;
 }
 </style>
