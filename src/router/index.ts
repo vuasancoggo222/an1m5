@@ -1,16 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/pages/Home.vue";
 import NotFound from "@/pages/404Page.vue";
+
 const router = createRouter({
   scrollBehavior(){
-    return {top:0}
+    const scrollTop = localStorage.getItem('scrollTop')
+    return {top: Number(scrollTop) ||  0}
   },
   history: createWebHistory(),
   routes: [
     {
       path: "/filter/:action",
       name: "FilterPage",
-      component: () => import("@/pages/FilterValuePage.vue"),
+      component: () => import("@/pages/FilterValuePage.vue"), 
     },
     {
       path: "/watch/:title",
@@ -37,7 +39,16 @@ const router = createRouter({
       name: "Schedule",
       component: () => import("@/pages/Schedule.vue"),
     },
-  
+    {
+      path : '/sign-in',
+      name : "Signin",
+      component : () => import("@/pages/Signin.vue")
+    },
+    {
+      path : '/sign-up',
+      name : "Signup",
+      component : () => import("@/pages/Signup.vue")
+    }
   ],
 });
 

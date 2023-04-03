@@ -2,7 +2,7 @@
 import { navLink, userDropdown } from "@/constants/navLink";
 import DropdownList from "@/components/dropdown/DropdownList.vue";
 import DropdownSearch from "../dropdown/DropdownSearch.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import useRedirectRouter from "@/uses/useRedirectRouter";
 import { reactive, ref, watch } from "vue";
 import { searchFunction } from "@/api/search";
@@ -11,7 +11,7 @@ import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
 import { useColorMode, useDark } from "@vueuse/core";
 import { onClickOutside } from '@vueuse/core'
-const isDark = useDark();
+const isDark  = useDark();
 const dropdown = ref(null)
 const { redirectByTag } = useRedirectRouter();
 const route = useRoute();
@@ -115,8 +115,8 @@ watch(
       />
     </div>
       <div class="authenticate-wrapper" v-if="!user">
-        <v-btn variant="outlined">Sign in</v-btn>
-        <v-btn color="primary" variant="flat">Sign up</v-btn>
+        <v-btn variant="outlined" @click="$router.push('/sign-in')">Sign in</v-btn>
+        <v-btn color="primary" @click="$router.push('/sign-up')" variant="flat">Sign up</v-btn>
       </div>
       <div class="user-wrapper" v-else>
         <v-menu transition="scale-transition">

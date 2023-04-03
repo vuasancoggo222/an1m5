@@ -15,13 +15,12 @@ const title = computed(() =>
     : `Search results for keyword '${route.query.keyword}'`
 );
 const route = useRoute();
-const isLoading = ref(false)
+const isLoading = ref(false);
 const animeData = ref<any>([]);
 const hasNextPage = ref<boolean>(false);
 const getFilterAnime = async () => {
-  isLoading.value = true
-  animeData.value = []
-  hasNextPage.value = false
+  isLoading.value = true;
+
   try {
     if (action.value == "generes") {
       const { data } = await searchAnimeByGenresFunction(
@@ -30,19 +29,16 @@ const getFilterAnime = async () => {
       );
       animeData.value = data.results;
       hasNextPage.value = data.hasNextPage;
-      isLoading.value = false
+      isLoading.value = false;
     } else if (action.value == "search") {
       const { data } = await searchFunction(route.query.keyword as any);
-      console.log(data);
-      console.log(data.hasNextPage);
       animeData.value = data.results;
       hasNextPage.value = data.hasNextPage;
-      isLoading.value = false
+      isLoading.value = false;
     }
-  
   } catch (error) {
     console.log(error);
-    isLoading.value = false
+    isLoading.value = false;
   }
 };
 const updatePerpage = () => {
@@ -59,6 +55,8 @@ watch(
 watch(
   () => route.query.type,
   () => {
+    animeData.value = [];
+    hasNextPage.value = false;
     getFilterAnime();
   },
   { immediate: true }
@@ -69,6 +67,8 @@ watch(animePerpage, () => {
 watch(
   () => route.query.keyword,
   () => {
+    animeData.value = [];
+    hasNextPage.value = false;
     getFilterAnime();
   },
   { immediate: true }
@@ -90,9 +90,11 @@ watch(
         :height="200"
       />
     </div>
-    <div v-else-if="!animeData.length && !isLoading" class="empty-anime">No anime data found.</div>
+    <div v-else-if="!animeData.length && !isLoading" class="empty-anime">
+      No anime data found.
+    </div>
     <div v-else-if="!animeData.length && isLoading" class="empty-anime">
-    <progress-circle :size="47" :indeterminate=true></progress-circle>
+      <progress-circle :size="47" :indeterminate="true"></progress-circle>
     </div>
     <div class="see-more">
       <v-btn

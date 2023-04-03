@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import convertToSlug from "@/helper/convertToSlug";
-import { useRouter } from "vue-router";
-const router = useRouter();
 defineProps({
     isSelected : {},
     item : {
@@ -24,7 +22,7 @@ defineProps({
           :height="height"
           :width="width"
           @click="
-            router.push(
+            $router.push(
               `/watch/${convertToSlug(item?.title.romaji || item?.title.userPreferred)}?id=${item?.id}`
             )
           "

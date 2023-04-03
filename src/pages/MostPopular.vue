@@ -4,12 +4,10 @@ import CustomCard from "@/components/card/CustomCard.vue";
 import { ref, watch } from "vue";
 import convertToSlug from "@/helper/convertToSlug";
 import useDebounce from "@/uses/useDebounce";
-import { useRouter } from "vue-router";
 import TagGroup from "@/components/TagGroup.vue";
 import useRedirectRouter from '@/uses/useRedirectRouter'
 import ProgressCircle from "@/components/progess/ProgressCircle.vue";
 const {redirectByTag} = useRedirectRouter()
-const router = useRouter();
 const { debounce } = useDebounce();
 const isShowButton = ref(false);
 const popularAnimeData = ref([]);
@@ -58,7 +56,7 @@ watch(
             <div
             class="my-2"
               @click="
-                router.push(`/watch/${convertToSlug(item.title.romaji || item.title.userPreferred)}?id=${item.id}`)">
+                $router.push(`/watch/${convertToSlug(item.title.romaji || item.title.userPreferred)}?id=${item.id}`)">
               <h3 class="title">#{{ i + 1 }} {{item.title.romaji || item.title.userPreferred }}</h3>
               <span class="my-2">Release date : {{ item.releaseDate }}</span
               ><br />

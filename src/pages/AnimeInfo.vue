@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { getAnimeInfoFunction } from "@/api/anime-info";
 import CustomCard from "@/components/card/CustomCard.vue";
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import {
+  computed,
+  onUnmounted,
+  onUpdated,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import convertToHours from "@/helper/convertToHours";
 import moment from "moment";
-import { LocationQueryValue, useRoute, useRouter } from "vue-router";
+import { LocationQueryValue, useRoute } from "vue-router";
 import CardSlideGroup from "@/components/slide/CardSlideGroup.vue";
 import InfoLine from "@/components/line/InfoLine.vue";
 // @ts-ignore
@@ -13,23 +20,32 @@ import { getAnimeStreamFunction } from "@/api/anime-stream";
 import { useMediaControls } from "@vueuse/core";
 import useRedirectRouter from "@/uses/useRedirectRouter";
 import TagGroup from "@/components/TagGroup.vue";
+
+
 const { redirectByTag } = useRedirectRouter();
 const video: any = ref(null);
 const { playing, currentTime, volume } = useMediaControls(video);
+const videoPlayer = ref(null);
 
 const videoOptions = reactive({
   source: "",
   quality: "",
 });
-onMounted(() => {
+onUpdated(() => {
+  //@ts-ignore
+  const offsetTop = videoPlayer?.value?.offsetTop - 120 ?? 0;
+  localStorage.setItem("scrollTop", offsetTop.toString());
   getPreviousCurrentTime();
+});
+
+onUnmounted(() => {
+  localStorage.removeItem("scrollTop");
 });
 const episodeData = ref<any>();
 const isLatestEpisode = ref<boolean>(false);
 let hls: any | null = null;
 const animeInfo = ref<any>({});
 const route = useRoute();
-const router = useRouter();
 const isLoading = ref<boolean>(false);
 const animeEpisodes = ref<any>();
 const episodeInfo = computed(() =>
@@ -71,11 +87,13 @@ const getAnimeEpisode = async () => {
 const getStream = (source: any) => {
   videoOptions.source = source.url;
   videoOptions.quality = source.quality;
-  let stream = `https://corsanywhere.herokuapp.com/${source.url}`;
+  let stream = `${import.meta.env.VITE_ANYURL}/${source.url}`;
   if (Hls.isSupported()) {
     hls = new Hls();
     hls.loadSource(stream);
     hls.attachMedia(video.value);
+  } else if (video.value.canPlayType("application/vnd.apple.mpegurl")) {
+    video.value.src = stream;
   }
 };
 watch(
@@ -105,7 +123,7 @@ watch(isLatestEpisode, (status) => {
 <template>
   <div v-if="!isLoading">
     <div class="info-breadcrum">
-      <span style="cursor:pointer" @click="router.push('/')">Home</span> /
+      <span style="cursor: pointer" @click="$router.push('/')">Home</span> /
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
     </div>
     <div class="banner-wrapper">
@@ -207,47 +225,40 @@ watch(isLatestEpisode, (status) => {
             ></iframe>
           </div>
         </div>
+
         <custom-card
-          :title="episodeInfo.title"
-          icon="mdi-movie"
-          class="my-6 video-player"
-          @keydown.bottom="volume -= 0.1"
-          @keydown.top="volume += 0.1"
-          @keydown.right="currentTime += 10"
-          @keydown.left="currentTime -= 10"
+          :title="episodeInfo.description ?? `Episode ${episodeInfo.number}`"
           v-else
+          ref="videoPlayer"
         >
-          <div class="video-container">
-            <video
-              id="video"
-              ref="video"
-              width="700"
-              height="400"
-              preload="metadata"
-              autoplay
-              @click="playing = !playing"
-              controls
-              :poster="episodeInfo.image"
-            ></video>
-          </div>
-          <div style="display: flex; justify-content: center" class="my-3">
-            <v-btn
-              size="small"
-              :color="
-                videoOptions.quality == item.quality ? 'error' : 'success'
-              "
-              class="mx-2"
-              @click="getStream(item)"
-              v-for="item in episodeData?.sources"
-              >{{ item.quality }}</v-btn
-            >
-            <v-btn size="small" color="error" class="mx-2"
-              ><a :href="episodeData?.download" style="color: white"
-                >Download</a
-              ></v-btn
-            >
-          </div>
+          <video
+            id="video"
+            ref="video"
+            width="700"
+            height="400"
+            preload="metadata"
+            autoplay
+            @click="playing = !playing"
+            controls
+            :poster="episodeInfo?.image"
+          ></video>
         </custom-card>
+        <div style="display: flex; justify-content: center" class="my-3">
+          <v-btn
+            size="small"
+            :color="videoOptions.quality == item.quality ? 'error' : 'success'"
+            class="mx-2"
+            @click="getStream(item)"
+            v-for="item in episodeData?.sources"
+            >{{ item.quality }}</v-btn
+          >
+          <v-btn size="small" color="error" class="mx-2"
+            ><a :href="episodeData?.download" style="color: white"
+              >Download</a
+            ></v-btn
+          >
+        </div>
+
         <div>
           <v-chip color="blue" label text-color="white">
             <v-icon start icon="mdi-label"></v-icon>
@@ -264,7 +275,7 @@ watch(isLatestEpisode, (status) => {
             <v-btn
               width="56"
               @click="
-                router.replace({
+                $router.replace({
                   path: route.fullPath,
                   params: route.params,
                   query: { id: route.query.id },
@@ -279,7 +290,7 @@ watch(isLatestEpisode, (status) => {
             <v-btn
               width="56"
               @click="
-                router.replace({
+                $router.replace({
                   path: route.fullPath,
                   params: route.params,
                   query: { ...route.query, episodeId: episode.id },
@@ -358,7 +369,6 @@ watch(isLatestEpisode, (status) => {
 }
 .video-container {
   position: relative;
-  border: 2px solid #6200ee;
   border-radius: 6px;
 }
 </style>

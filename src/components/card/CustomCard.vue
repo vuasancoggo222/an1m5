@@ -12,6 +12,9 @@ defineProps({
   modelValue : {},
   option : {
     type : Array
+  },
+  height : {
+    type : Number
   }
 });
 const emit = defineEmits(['selectValue'])
@@ -21,8 +24,8 @@ const selectValue = (event : any ) => emit('selectValue',event.target.value)
 </script>
 
 <template>
-  <v-sheet class="mx-auto custom-card" elevation="8" max-width="100%">
-    <div style="min-height: 223px">
+  <v-sheet :height="height" class="mx-auto custom-card" elevation="8" max-width="100%">
+    <div  style="min-height: 223px">
       <div class="card-header">
         <v-chip color="red" label text-color="white">
           <v-icon start :icon="icon"></v-icon>

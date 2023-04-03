@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { defineAsyncComponent, watch } from "vue";
+import { watch } from "vue";
 import An1m5Footer from "./components/layout/An1m5Footer.vue";
+import An1m5Header from "./components/layout/An1m5Header.vue";
 import { useRoute } from "vue-router";
 import { useTitle } from "@vueuse/core";
 
 const route = useRoute();
-const An1m5Header = defineAsyncComponent(
-  () => import("@/components/layout/An1m5Header.vue")
-);
+
 const title: any = useTitle();
 watch(
   () => route.name,

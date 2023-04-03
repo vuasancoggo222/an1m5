@@ -17,6 +17,9 @@ defineProps({
   },
   searching : {
     type : Boolean
+  },
+  height : {
+    type : Number
   }
 });
 const emit = defineEmits (['closeDropdown'])
@@ -39,7 +42,7 @@ const redirectToSearchPage = (keyword : any) => {
       v-if="dropdownItems?.response?.totalResults !== 0"
       
       :width="width"
-      height="410"
+      :height="height || 410"
       :text="`We found ${
         dropdownItems?.response?.totalResults ?? 0
       }  anime in this keyword.`"

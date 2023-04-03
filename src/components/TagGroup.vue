@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import convertToSlug from "@/helper/convertToSlug";
 import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 const route = useRoute();
 
 const nowPath = computed(() => route.query.type);
