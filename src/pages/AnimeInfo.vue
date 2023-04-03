@@ -227,11 +227,17 @@ watch(isLatestEpisode, (status) => {
         </div>
 
         <custom-card
+        style="display:flex;justify-content: center;background:  linear-gradient(
+          rgba(0, 0, 0, 0.7), 
+          rgba(0, 0, 0, 0.7)
+        )"
+          icon="mdi-information-outline"
           :title="episodeInfo.description ?? `Episode ${episodeInfo.number}`"
-          v-else
+          v-else-if="route.query.episodeId"
           ref="videoPlayer"
         >
           <video
+            style="border:3px solid #fff;position:relative"
             id="video"
             ref="video"
             width="700"
@@ -241,9 +247,12 @@ watch(isLatestEpisode, (status) => {
             @click="playing = !playing"
             controls
             :poster="episodeInfo?.image"
-          ></video>
+          >
+         
+          </video>
+        
         </custom-card>
-        <div style="display: flex; justify-content: center" class="my-3">
+        <div style="display: flex; justify-content: center" v-else-if="route.query.episodeId" class="my-3">
           <v-btn
             size="small"
             :color="videoOptions.quality == item.quality ? 'error' : 'success'"
@@ -370,5 +379,8 @@ watch(isLatestEpisode, (status) => {
 .video-container {
   position: relative;
   border-radius: 6px;
+}
+.custom-controls {
+  position: absolute;
 }
 </style>

@@ -15,6 +15,9 @@ defineProps({
   },
   height : {
     type : Number
+  },
+  titleColor : {
+    default : 'red'
   }
 });
 const emit = defineEmits(['selectValue'])
