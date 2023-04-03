@@ -7,8 +7,8 @@ const {signInWithThirdParty} = useSignInWithThirdParty()
 <template>
  <div>
         <div class="mb-4">Or sign in with</div> 
-        <v-btn color="error" class="mx-2" @click="signInWithThirdParty(new GoogleAuthProvider)">Google</v-btn>
-        <v-btn color="primary" class="mx-2" @click="signInWithThirdParty(new FacebookAuthProvider)">Facebook</v-btn>   
+        <v-btn color="error" class="mx-2" @click="signInWithThirdParty(new GoogleAuthProvider())">Google</v-btn>
+        <v-btn color="primary" class="mx-2" @click="signInWithThirdParty(new FacebookAuthProvider())">Facebook</v-btn>   
     </div>
 
 </template>
