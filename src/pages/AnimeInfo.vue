@@ -87,7 +87,7 @@ const getAnimeEpisode = async () => {
 const getStream = (source: any) => {
   videoOptions.source = source.url;
   videoOptions.quality = source.quality;
-  let stream = `${import.meta.env.VITE_ANYURL}/${source.url}`;
+  let stream = `${import.meta.env.VITE_ANYURL}?encodeURIComponent(${source.url})`;
   if (Hls.isSupported()) {
     hls = new Hls();
     hls.loadSource(stream);
