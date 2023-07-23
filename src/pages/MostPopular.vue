@@ -69,7 +69,7 @@ watch(
       </div>
       <div v-else class="loading-circle">
         <progress-circle style=" margin-top: 50px;" :indeterminate="true" :size="40"/>
-        </div>
+      </div>
       <div class="button-wrapper">
         <v-btn
           v-if="isShowButton"

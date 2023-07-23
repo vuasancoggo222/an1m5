@@ -24,17 +24,16 @@ import TagGroup from "@/components/TagGroup.vue";
 
 const { redirectByTag } = useRedirectRouter();
 const video: any = ref(null);
-const { playing, currentTime, volume } = useMediaControls(video);
-const videoPlayer = ref(null);
-
+const { playing, currentTime } = useMediaControls(video);
 const videoOptions = reactive({
   source: "",
   quality: "",
 });
 onUpdated(() => {
   //@ts-ignore
-  const offsetTop = videoPlayer?.value?.offsetTop - 120 ?? 0;
-  localStorage.setItem("scrollTop", offsetTop.toString());
+  const offsetTop = video?.value?.offsetTop - 120 ?? 0;
+  localStorage.setItem("scrollTop", offsetTop.toString())
+  console.dir(offsetTop);
   getPreviousCurrentTime();
 });
 
@@ -87,8 +86,8 @@ const getAnimeEpisode = async () => {
 const getStream = (source: any) => {
   videoOptions.source = source.url;
   videoOptions.quality = source.quality;
-  let url = encodeURIComponent(source.url);
-  let stream = `${import.meta.env.VITE_ANYURL}${url}`;
+  let url = source.url;
+  let stream = `${url}`;
   if (Hls.isSupported()) {
     hls = new Hls();
     hls.loadSource(stream);
@@ -233,9 +232,9 @@ watch(isLatestEpisode, (status) => {
           rgba(0, 0, 0, 0.7)
         )"
           icon="mdi-information-outline"
-          :title="episodeInfo.description ?? `Episode ${episodeInfo.number}`"
+          :title="`Episode ${episodeInfo.number}`"
           v-else-if="route.query.episodeId"
-          ref="videoPlayer"
+
         >
           <video
             style="border:3px solid #fff;position:relative"
