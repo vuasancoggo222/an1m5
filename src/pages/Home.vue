@@ -12,7 +12,7 @@ const trendingAnime = ref<any>([]);
 const trending = useTrendingSelectStore();
 const {debounce} = useDebounce()
 const isDisabledBtn = ref<boolean>(false)
-// const { recentAnimeData ,recentIsFinished } =  getRecentAnimeFunction();
+const { recentAnimeData ,recentIsFinished } =  getRecentAnimeFunction();
 
 const getTrendingAnime = async () => {
   try {
@@ -32,14 +32,14 @@ getTrendingAnime();
 </script>
 
 <template>
-  // <div class="recent-anime-wrapper">
-  //   <card-slide-group
-  //     :data="recentAnimeData"
-  //     card-title="Recent anime"
-  //     card-title-icon="mdi-history"
-  //     :style="recentIsFinished ? '' : 'opacity : 0.5'"
-  //   />
-  // </div>
+  <div class="recent-anime-wrapper">
+    <card-slide-group
+      :data="recentAnimeData"
+      card-title="Recent anime"
+      card-title-icon="mdi-history"
+      :style="recentIsFinished ? '' : 'opacity : 0.5'"
+    />
+  </div>
   <div class="mt-12">
     <custom-card
       @selectValue="trending.$patch({ trendingLimit: Number($event) })"

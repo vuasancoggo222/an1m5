@@ -49,11 +49,11 @@ const router = createRouter({
       name : "Signup",
       component : () => import("@/pages/Signup.vue")
     },
-    {
-      path : '/bad-request-500',
-      name : "Bad Request",
-      component : () => import("@/pages/BadRequest.vue")
-    }
+    // {
+    //   path : '/bad-request-500',
+    //   name : "Bad Request",
+    //   component : () => import("@/pages/BadRequest.vue")
+    // }
   ],
 });
 

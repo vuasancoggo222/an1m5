@@ -12,8 +12,8 @@ config.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   console.log(error);
-  if(error.response.status == 500){
-    router.push('/bad-request-500')
-  }
+  // if(error.response.status == 500){
+  //   router.push('/bad-request-500')
+  // }
   return Promise.reject(error);
 });
