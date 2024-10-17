@@ -18,10 +18,10 @@ defineProps({
 </script>
 
 <template>
-  <v-chip-group class="mx-2 my-4" >
+  <v-chip-group class="mx-2 my-4">
     <v-chip
       :style="custom"
-      :class="[nowPath == convertToSlug(tag) ? 'choose-genere' : '']"
+      :class="[nowPath == convertToSlug(tag) ? 'choose-genres' : '']"
       @click="$emit('onRedirect',tag)"
       label
       v-for="tag in tagData as any"
@@ -31,8 +31,8 @@ defineProps({
   </v-chip-group>
 
 </template>
-<style>
-.choose-genere {
+<style lang="css">
+.choose-genres {
   background-color: #34568b;
   color: #ffff;
 }

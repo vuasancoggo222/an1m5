@@ -5,7 +5,6 @@ export default function useSignInWithThirdParty (){
    
     const signInWithThirdParty = (provider : any) => {
         signInWithPopup(auth, provider)
-        
     }
     return {
         signInWithThirdParty

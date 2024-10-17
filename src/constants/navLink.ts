@@ -16,7 +16,7 @@ export const navLink:INavLink[] = [
 
 export const userDropdown = [
     {
-      title: "Account infomation",
+      title: "Account information",
       value: '/account-information',
       icon: "mdi-card-account-details"
     },
@@ -26,7 +26,7 @@ export const userDropdown = [
         icon: "mdi-cog"
       },
     {
-      title: "Rencent watched",
+      title: "Recent watched",
       value: '/recent-watched',
       icon: "mdi-history"
     },

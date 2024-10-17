@@ -122,7 +122,7 @@ watch(isLatestEpisode, (status) => {
 
 <template>
   <div v-if="!isLoading">
-    <div class="info-breadcrum">
+    <div class="info-breadcrumb">
       <span style="cursor: pointer" @click="$router.push('/')">Home</span> /
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
     </div>
@@ -141,7 +141,7 @@ watch(isLatestEpisode, (status) => {
         <h2 class="mb-4 info-title">
           {{ animeInfo?.title?.romaji || animeInfo?.title?.english }}
         </h2>
-        <div v-if="!route.query.episodeId" class="infomation-content">
+        <div v-if="!route.query.episodeId" class="information-content">
           <div class="info-image-wrapper">
             <img :src="animeInfo.image" alt="" />
           </div>
@@ -330,7 +330,7 @@ watch(isLatestEpisode, (status) => {
   </div>
 </template>
 <style>
-.infomation-content {
+.information-content {
   display: grid;
   grid-template-columns: 200px 1fr 1fr;
   gap: 15px;
@@ -355,7 +355,7 @@ watch(isLatestEpisode, (status) => {
   display: flex;
   justify-content: center;
 }
-.info-breadcrum {
+.info-breadcrumb {
   margin: 12px 22px;
   font-size: 14px;
 }

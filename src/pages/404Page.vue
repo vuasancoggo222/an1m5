@@ -9,7 +9,7 @@
     width="100%"
   >
     <div>
-      <h2 class="text-h4 font-weight-black text-orange mb-2">Opps !</h2>
+      <h2 class="text-h4 font-weight-black text-orange mb-2">Oops !</h2>
 
       <div class="text-h5 font-weight-medium mb-2">
        404 Not found !!

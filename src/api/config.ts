@@ -1,7 +1,7 @@
 import axios from 'axios'
 import router from '@/router';
 const config = axios.create({
-    baseURL: 'https://api.consumet.org/meta/anilist/', 
+    baseURL: 'https://an1m5api.vercel.app/meta/anilist/', 
   });
 
 export default config ;

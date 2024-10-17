@@ -15,7 +15,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="progess-circular">
+  <div class="progress-circular">
     <v-progress-circular
       :size="size"
       :indeterminate="indeterminate"
@@ -25,7 +25,7 @@ defineProps({
 
 </template>
 <style>
-.progess-circular{
+progress-circular{
     display: flex;
     justify-content: center;
 }
