@@ -25,9 +25,14 @@ const router = createRouter({
       component: Home,
     },
     {
-      path: "/most-popular",
+      path: "/most-popular-anime",
       name: "Most Popular",
       component: () => import("@/pages/MostPopular.vue"),
+    },
+    {
+      path: "/manga",
+      name: "Manga",
+      component: () => import("@/pages/Manga.vue"),
     },
     {
       path: "/:pathMatch(.*)*",

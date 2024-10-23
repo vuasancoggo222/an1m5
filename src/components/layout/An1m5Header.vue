@@ -4,7 +4,7 @@ import DropdownList from "@/components/dropdown/DropdownList.vue";
 import DropdownSearch from "../dropdown/DropdownSearch.vue";
 import { useRoute } from "vue-router";
 import useRedirectRouter from "@/uses/useRedirectRouter";
-import { reactive, ref, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { searchFunction } from "@/api/search";
 import useDebounce from "@/uses/useDebounce";
 import { genres } from "@/constants/genres";
@@ -25,12 +25,16 @@ const searchQuery = reactive({
   query: "",
   page: 1,
   perPage: 6,
-  season: "",
-  format: "",
-  genres: "",
-  year: "",
+  season: undefined,
+  format: undefined,
+  genres: undefined,
+  year: undefined,
 });
 const isSearching = ref(false);
+const searchingPlaceholder = computed(() =>{
+  if (searchQuery.query) return "Search for movies, shows, or people";
+  else return "Start typing to search";
+})
 useColorMode({
   attribute: "theme",
 });
@@ -42,7 +46,7 @@ const showHideDropdown = () => {
 const getSearchData = async () => {
   isSearching.value = true;
   try {
-    if (searchQuery.query !== "" ?? null) {
+    if (searchQuery.query !== "") {
       const { query, page, perPage, season, format, genres, year } =
         searchQuery;
       const { data } = await searchFunction(
@@ -98,22 +102,6 @@ watch(
     </v-tabs>
    
     <div class="side-right-header">
-      <div class="search-wrapper" style="position: relative">
-      <input class="search-input" v-model="searchQuery.query" type="text" />
-      <dropdown-search
-      ref="dropdown"
-        v-on-click-outside="closeSearchDropdown"
-        @closeDropdown="closeSearchDropdown"
-        :dropdown-items="searchData"
-        :keyword="searchQuery.query"
-        :searching="isSearching"
-        class="search-dropdown"
-        :open="openSearchDropdown"
-        
-        :width="320"
-        active-color="primary"
-      />
-    </div>
       <div class="authenticate-wrapper" v-if="!user">
         <v-btn variant="outlined" @click="$router.push('/sign-in')">Sign in</v-btn>
         <v-btn color="primary" @click="$router.push('/sign-up')" variant="flat">Sign up</v-btn>
@@ -146,6 +134,22 @@ watch(
       ></v-switch>
     </div>
   </div>
+  <div class="search-wrapper" style="position: relative">
+      <input class="search-input" v-model="searchQuery.query" type="text" :placeholder="searchingPlaceholder" />
+      <dropdown-search
+      ref="dropdown"
+        v-on-click-outside="closeSearchDropdown"
+        @closeDropdown="closeSearchDropdown"
+        :dropdown-items="searchData"
+        :keyword="searchQuery.query"
+        :searching="isSearching"
+        class="search-dropdown"
+        :open="openSearchDropdown"
+        
+        :width="320"
+        active-color="primary"
+      />
+    </div>
   <tag-group @on-redirect="redirectByTag" :tag-data="genres" />
 </template>
 
@@ -157,19 +161,20 @@ watch(
   gap: 20px;
 }
 .header-tab {
-  flex: 3;
+  flex: 6;
 }
 
 .search-wrapper {
   margin-right: 15px;
   width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .search-wrapper input {
   background-color: #ffff;
   outline: none;
-  min-width: 320px;
-  width: 100%;
+  min-width: 500px;
   height: 40px;
   border: 2px solid #cbc0c0;
   border-radius: 12px;

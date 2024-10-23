@@ -5,13 +5,17 @@ export const navLink:INavLink[] = [
         path : "/",
     },
     {
-        name : "Most Popular",
-        path : "/most-popular",
+        name : "Most Popular Anime",
+        path : "/most-popular-anime",
     },
     {
-        name : "Schedule",
-        path : "/schedule",
-    }
+        name : "Anime Schedule",
+        path : "/anime-schedule",
+    },
+    {
+      name : "Manga",
+      path : "/manga",
+  }
 ]
 
 export const userDropdown = [
