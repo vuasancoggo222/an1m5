@@ -46,13 +46,13 @@ const router = createRouter({
     },
     {
       path : '/sign-in',
-      name : "Signin",
-      component : () => import("@/pages/Signin.vue")
+      name : "SignIn",
+      component : () => import("@/pages/SignIn.vue")
     },
     {
       path : '/sign-up',
-      name : "Signup",
-      component : () => import("@/pages/Signup.vue")
+      name : "SignUp",
+      component : () => import("@/pages/SignUp.vue")
     },
     // {
     //   path : '/bad-request-500',
