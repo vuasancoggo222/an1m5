@@ -286,6 +286,7 @@ watch(isLatestEpisode, (status) => {
               @click="
                 $router.replace({
                   path: route.fullPath,
+                  // @ts-ignore
                   params: route.params,
                   query: { id: route.query.id },
                 })
@@ -301,6 +302,7 @@ watch(isLatestEpisode, (status) => {
               @click="
                 $router.replace({
                   path: route.fullPath,
+                  // @ts-ignore
                   params: route.params,
                   query: { ...route.query, episodeId: episode.id },
                 })
