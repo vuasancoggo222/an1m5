@@ -13,8 +13,8 @@ const signInParams = reactive({
 
 <template>
  <AuthCard customClass="sign-in-card" title="Sign in" description="Welcome back to my An1m5 website.">
-    <BaseInput @input-value="value => signInParams.email = value" class="my-6" type="text" :height="50" placeholder="Your Email"/>
-    <BaseInput @input-value="value => signInParams.password = value" class="my-6" type="password" :height="50" placeholder="Your Password"/>
+    <BaseInput @input-value="(value: string) => signInParams.email = value" class="my-6" type="text" :height="50" placeholder="Your Email"/>
+    <BaseInput @input-value="(value: string) => signInParams.password = value" class="my-6" type="password" :height="50" placeholder="Your Password"/>
     <v-btn class="mb-4" color="success">Sign in</v-btn>
     <SignInOptions class="mb-4"/>
     <span>Don't have account ? <router-link to="/sign-up">Sign up</router-link></span>
