@@ -2,7 +2,7 @@
 import BaseInput from '@/components/input/BaseInput.vue';
 import AuthCard from '@/components/card/AuthCard.vue';
 import { reactive } from 'vue';
-import SignInOptions from '@/components/SignInOptions.vue'
+import SignInOptions from '../components/SignInOptions.vue'
 
 const signupParams = reactive({
     username : "",
