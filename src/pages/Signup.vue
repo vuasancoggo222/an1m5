@@ -2,7 +2,7 @@
 import BaseInput from '@/components/input/BaseInput.vue';
 import AuthCard from '@/components/card/AuthCard.vue';
 import { reactive } from 'vue';
-import SignInOptions from '../components/SignInOptions.vue'
+import SigninOptions from '../components/SigninOptions.vue'
 
 const signupParams = reactive({
     username : "",
@@ -18,7 +18,7 @@ const signupParams = reactive({
     <BaseInput @input-value="(value: string) => signupParams.email = value" class="my-6" type="text" :height="50" placeholder="Your Email"/>
     <BaseInput @input-value="(value: string) => signupParams.password = value" class="my-6" type="password" :height="50" placeholder="Your Password"/>
     <v-btn class="mb-4" color="success">Sign up</v-btn>
-    <SignInOptions class="mb-4"/>
+    <SigninOptions class="mb-4"/>
     <span>Already have account? <router-link to="/sign-in">Sign in</router-link></span>
  </AuthCard>
   

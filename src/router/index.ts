@@ -47,12 +47,12 @@ const router = createRouter({
     {
       path : '/sign-in',
       name : "SignIn",
-      component : () => import("@/pages/SignIn.vue")
+      component : () => import("@/pages/Signin.vue")
     },
     {
       path : '/sign-up',
       name : "SignUp",
-      component : () => import("@/pages/SignUp.vue")
+      component : () => import("@/pages/Signup.vue")
     },
     // {
     //   path : '/bad-request-500',
