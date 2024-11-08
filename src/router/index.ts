@@ -54,6 +54,11 @@ const router = createRouter({
       name : "SignUp",
       component : () => import("@/pages/Signup.vue")
     },
+    {
+      path: '/mangaDetails/:id',
+      name: "Manga Details",
+      component: () => import("@/pages/MangaDetails.vue"),
+    }
     // {
     //   path : '/bad-request-500',
     //   name : "Bad Request",
