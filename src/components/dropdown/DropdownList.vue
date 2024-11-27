@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import useRedirectRouter from "@/uses/useRedirectRouter";
+import useSignOut from "@/uses/useSignOut";
 const { redirectRouter } = useRedirectRouter();
-
+const { doSignOut } = useSignOut();
 const props = defineProps({
   dropdownItems: {
     type: Array,
@@ -14,6 +15,12 @@ const props = defineProps({
   },
 });
 const { dropdownItems } = props;
+const clickDropDown = async (value : string) => {
+  if(value === "/log-out"){
+    await doSignOut()
+  }
+  else redirectRouter(value)
+}
 </script>
 
 <template>
@@ -25,10 +32,10 @@ const { dropdownItems } = props;
     <v-list>
       <v-list-item
         v-for="(item) in dropdownItems as any"
-        @click="redirectRouter(item.value)"
+        @click="clickDropDown(item.value)"
         :key="item.value"
         :value="item"
-        :active-color="activeColor"
+        :color="activeColor"
       >
         <template v-slot:prepend>
           <v-icon :icon="item.icon"></v-icon>

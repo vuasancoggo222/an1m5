@@ -11,6 +11,7 @@ import { genres } from "@/constants/genres";
 import TagGroup from "@/components/TagGroup.vue";
 import { useColorMode, useDark } from "@vueuse/core";
 import { onClickOutside } from '@vueuse/core'
+import { useAuthStore } from "@/store/authStore";
 const isDark  = useDark();
 const dropdown = ref(null)
 const { redirectByTag } = useRedirectRouter();
@@ -19,7 +20,7 @@ const { redirectRouter } = useRedirectRouter();
 const currentTabs = ref<string>(route.path);
 const searchData = reactive<any>({});
 const openSearchDropdown = ref<boolean>(false);
-const user = ref(false);
+const userStore = useAuthStore();
 const { debounce } = useDebounce();
 const searchQuery = reactive({
   query: "",
@@ -38,7 +39,7 @@ const searchingPlaceholder = computed(() =>{
 useColorMode({
   attribute: "theme",
 });
-onClickOutside(dropdown, () => closeSearchDropdown(false) )
+onClickOutside(dropdown, () => closeSearchDropdown(false))
 const showHideDropdown = () => {
   if (searchQuery.query) openSearchDropdown.value = true;
   else openSearchDropdown.value = false;
@@ -100,9 +101,8 @@ watch(
         }}</v-tab>
       </template>
     </v-tabs>
-   
     <div class="side-right-header">
-      <div class="authenticate-wrapper" v-if="!user">
+      <div class="authenticate-wrapper" v-if="!userStore.user.hasOwnProperty('uid')">
         <v-btn variant="outlined" @click="$router.push('/sign-in')">Sign in</v-btn>
         <v-btn color="primary" @click="$router.push('/sign-up')" variant="flat">Sign up</v-btn>
       </div>
@@ -120,7 +120,7 @@ watch(
           <dropdown-list
             :dropdown-items="userDropdown"
             :width="200"
-            active-color="primary"
+            color="primary"
           />
         </v-menu>
         <v-btn icon="mdi-heart" size="small" color="error"></v-btn>
@@ -145,9 +145,8 @@ watch(
         :searching="isSearching"
         class="search-dropdown"
         :open="openSearchDropdown"
-        
         :width="320"
-        active-color="primary"
+        color="primary"
       />
     </div>
   <tag-group @on-redirect="redirectByTag" :tag-data="genres" />

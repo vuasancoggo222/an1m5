@@ -12,52 +12,62 @@ const router = createRouter({
     {
       path: "/filter/:action",
       name: "FilterPage",
-      component: () => import("@/pages/FilterValuePage.vue"), 
+      component: () => import("@/pages/FilterValuePage.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/watch/:title",
       name: "Anime Info",
       component: () => import("@/pages/AnimeInfo.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/",
       name: "Home",
       component: Home,
+      meta: { requiresAuth: false },
     },
     {
       path: "/most-popular-anime",
       name: "Most Popular",
       component: () => import("@/pages/MostPopular.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/manga",
       name: "Manga",
       component: () => import("@/pages/Manga.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: NotFound,
+      meta: { requiresAuth: false },
     },
     {
       path: "/schedule",
       name: "Schedule",
       component: () => import("@/pages/Schedule.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path : '/sign-in',
       name : "SignIn",
-      component : () => import("@/pages/Signin.vue")
+      component : () => import("@/pages/Signin.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path : '/sign-up',
       name : "SignUp",
-      component : () => import("@/pages/Signup.vue")
+      component : () => import("@/pages/Signup.vue"),
+      meta: { requiresAuth: false },
     },
     {
       path: '/mangaDetails/:id',
       name: "Manga Details",
       component: () => import("@/pages/MangaDetails.vue"),
+      meta: { requiresAuth: false },
     }
     // {
     //   path : '/bad-request-500',
@@ -67,4 +77,15 @@ const router = createRouter({
   ],
 });
 
+const authList = ["SignIn", "SignUp"];
+router.beforeEach((to, from, next) => {
+  const auth = localStorage.getItem('auth') ? JSON.parse(localStorage.getItem('auth') as string) : null;
+  if(auth && auth.user.hasOwnProperty("uid") && authList.includes(to.name as string)) {
+    next({ name: 'Home' })
+  }
+  else if(!auth && to.name !== 'SignIn' && to.meta.requiresAuth){
+    next({ name: 'SignIn' })
+  }
+  else next()
+})
 export default router;
