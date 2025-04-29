@@ -36,8 +36,6 @@ onMounted(() => {
             <router-link :to="chapter.path.toString()">{{ chapter.name }}</router-link>
         </div>
     </div>
-</template>
-<template v-else>
     <div class="manga-list-container">
         <div class="loading-message">Loading manga details...</div>
     </div>
