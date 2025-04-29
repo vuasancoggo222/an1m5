@@ -12,6 +12,7 @@ import TagGroup from "@/components/TagGroup.vue";
 import { useColorMode, useDark } from "@vueuse/core";
 import { onClickOutside } from '@vueuse/core'
 import { useAuthStore } from "@/store/authStore";
+import { MangaCategory, mangaRoute } from "@/constants/manga";
 const isDark  = useDark();
 const dropdown = ref(null)
 const { redirectByTag } = useRedirectRouter();
@@ -32,6 +33,11 @@ const searchQuery = reactive({
   year: undefined,
 });
 const isSearching = ref(false);
+const mediaType = computed(() => {
+  if(mangaRoute.includes(route.name as string)) return "manga";
+  else return "anime";
+})
+const genresOptions = computed(() => mediaType.value === "manga" ? MangaCategory : genres )
 const searchingPlaceholder = computed(() =>{
   if (searchQuery.query) return "Search for movies, shows, or people";
   else return "Start typing to search";
@@ -149,7 +155,7 @@ watch(
         color="primary"
       />
     </div>
-  <tag-group @on-redirect="redirectByTag" :tag-data="genres" />
+  <tag-group @on-redirect="redirectByTag" :tag-data="genresOptions" :media-type="mediaType" />
 </template>
 
 <style scoped>

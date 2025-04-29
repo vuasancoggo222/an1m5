@@ -31,11 +31,43 @@ onMounted(() => {
         <div> Updated: {{ mangaDetailData.updated }}</div>
         <div> View: {{ mangaDetailData.view }}</div>
         <div> genres: {{ mangaDetailData.genres }}</div>
+        <img :src="mangaDetailData.image" alt="">
         <div v-for="chapter in mangaDetailData.chapterList">
             <router-link :to="chapter.path.toString()">{{ chapter.name }}</router-link>
         </div>
     </div>
 </template>
+<template v-else>
+    <div class="manga-list-container">
+        <div class="loading-message">Loading manga details...</div>
+    </div>
+</template>
+
+<style scoped>
+.manga-list-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.loading-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #666;
+    margin: 20px 0;
+}
+
+/* Existing manga details styling */
+.router-link-active {
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+div {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+</style>
 
 
 <style></style>

@@ -16,7 +16,7 @@ export const useMangaStore = defineStore('manga', {
     actions: {
       async fetchMangaList() {
         try {
-            const response = await getListManga();
+            const response = await getListManga({});
             if(response.data){
                 this.mangaList = response.data.mangaList;
                 this.totalPages = response.data.metaData.totalPages;

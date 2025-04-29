@@ -6,15 +6,16 @@ const route = useRoute();
 
 const nowPath = computed(() => route.query.type);
 defineProps({
-    tagData : {
-        type : Array
-    },
-    custom : {
-      type : String
-    }
-})
-
-
+  tagData: {
+    type: Array,
+  },
+  custom: {
+    type: String,
+  },
+  mediaType: {
+    type: String,
+  },
+});
 </script>
 
 <template>
@@ -22,14 +23,13 @@ defineProps({
     <v-chip
       :style="custom"
       :class="[nowPath == convertToSlug(tag) ? 'choose-genres' : '']"
-      @click="$emit('onRedirect',tag)"
+      @click="$emit('onRedirect', tag, mediaType)"
       label
       v-for="tag in tagData as any"
       :key="tag"
       >{{ tag }}</v-chip
     >
   </v-chip-group>
-
 </template>
 <style lang="css">
 .choose-genres {

@@ -1,39 +1,50 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, UserCredential, AuthError } from "firebase/auth";
 import { firebaseApp } from "@/main";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "vue-router";
 import { signInMethod } from "@/constants/auth";
-const { updateUserData, updateCredentialToken,updateSignInMethod } = useAuthStore();
+
+type Provider = GoogleAuthProvider;
+
 export default function useSignInWithThirdParty() {
+  const { updateUserData, updateCredentialToken, updateSignInMethod } = useAuthStore();
   const auth = getAuth(firebaseApp);
-  const router = useRouter()
-  const signInWithThirdParty = async (provider: any) => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      if (result.providerId === "google.com") {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-        if (user) updateUserData(user);
-        if (token) updateCredentialToken(token);
-      }
-      updateSignInMethod(signInMethod.thirdParty);
-      router.push({ name: "Home"})
-    } catch (error: any) {
-      if (provider === "google.com") {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      }
+  const router = useRouter();
+
+  const handleGoogleSignIn = (result: UserCredential) => {
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential?.accessToken;
+    const user = result.user;
+
+    if (user) updateUserData(user);
+    if (token) updateCredentialToken(token);
+  };
+
+  const handleError = (error: AuthError, provider: Provider) => {
+    if (provider instanceof GoogleAuthProvider) {
+      console.error({
+        errorCode: error.code,
+        errorMessage: error.message,
+        email: error.customData?.email,
+        credential: GoogleAuthProvider.credentialFromError(error)
+      });
     }
   };
-  return {
-    signInWithThirdParty,
+
+  const signInWithThirdParty = async (provider: Provider) => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      
+      if (result.providerId === "google.com") {
+        handleGoogleSignIn(result);
+      }
+
+      updateSignInMethod(signInMethod.thirdParty);
+      router.push({ name: "Home" });
+    } catch (error) {
+      handleError(error as AuthError, provider);
+    }
   };
+
+  return { signInWithThirdParty };
 }

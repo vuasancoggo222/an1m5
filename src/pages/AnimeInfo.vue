@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import 'vidstack/bundle';
 import { getAnimeInfoFunction } from "@/api/anime-info";
 import CustomCard from "@/components/card/CustomCard.vue";
 import {
@@ -33,7 +34,6 @@ onUpdated(() => {
   //@ts-ignore
   const offsetTop = video?.value?.offsetTop - 120 ?? 0;
   localStorage.setItem("scrollTop", offsetTop.toString())
-  console.dir(offsetTop);
   getPreviousCurrentTime();
 });
 
@@ -78,23 +78,25 @@ const getAnimeEpisode = async () => {
   try {
     const { data } = await getAnimeStreamFunction(route.query.episodeId as any);
     episodeData.value = data;
-    getStream(episodeData.value.sources[3]);
+    console.log(episodeData.value);
+    
+    getStream(episodeData.value.sources[0]);
   } catch (error) {
     console.log(error);
   }
 };
 const getStream = (source: any) => {
   videoOptions.source = source.url;
-  videoOptions.quality = source.quality;
-  let url = source.url;
-  let stream = `${url}`;
-  if (Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(stream);
-    hls.attachMedia(video.value);
-  } else if (video.value.canPlayType("application/vnd.apple.mpegurl")) {
-    video.value.src = stream;
-  }
+  videoOptions.quality = source?.quality;
+  // let url = source.url;
+  // let stream = `${url}`;
+  // if (Hls.isSupported()) {
+  //   hls = new Hls();
+  //   hls.loadSource(stream);
+  //   hls.attachMedia(video.value);
+  // } else if (video.value.canPlayType("application/vnd.apple.mpegurl")) {
+  //   video.value.src = stream;
+  // }
 };
 watch(
   () => route.query.id,
@@ -127,14 +129,7 @@ watch(isLatestEpisode, (status) => {
       <span>{{ animeInfo?.title?.romaji || animeInfo?.title?.english }}</span>
     </div>
     <div class="banner-wrapper">
-      <v-img
-        width="100%"
-        aspect-radio="16/9"
-        class="mx-auto"
-        cover
-        :src="animeInfo.cover"
-        :alt="animeInfo.id"
-      ></v-img>
+      <v-img width="100%" aspect-radio="16/9" class="mx-auto" cover :src="animeInfo.cover" :alt="animeInfo.id"></v-img>
     </div>
     <div class="anime-detail-wrapper">
       <custom-card title="Anime information" icon="mdi-information">
@@ -148,9 +143,7 @@ watch(isLatestEpisode, (status) => {
           <div v-if="animeInfo" class="info-episode">
             <div class="mb-4">
               <v-chip class="mr-4" style="background-color: #0b4778" label>
-                <span
-                  v-if="animeInfo.currentEpisode || animeInfo.totalEpisodes"
-                >
+                <span v-if="animeInfo.currentEpisode || animeInfo.totalEpisodes">
                   {{ animeInfo.currentEpisode }} / {{ animeInfo.totalEpisodes }}
                 </span>
                 <span v-else>Updating</span>
@@ -159,13 +152,13 @@ watch(isLatestEpisode, (status) => {
                 <v-icon start icon="mdi-clock-time-eight"></v-icon>
                 <span v-if="animeInfo.duration">{{
                   convertToHours(animeInfo.duration)
-                }}</span>
+                  }}</span>
                 <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
                 <span v-if="animeInfo.releaseDate">{{
                   animeInfo.releaseDate
-                }}</span>
+                  }}</span>
                 <span v-else>Updating</span>
               </v-chip>
               <v-chip class="mr-4" style="background-color: #0b4778" label>
@@ -177,19 +170,13 @@ watch(isLatestEpisode, (status) => {
               </v-chip>
             </div>
             <div>
-              <tag-group
-                :tag-data="animeInfo.genres"
-                @onRedirect="redirectByTag"
-                :custom="'background-color: #7149c6; color: #fff'"
-              />
+              <tag-group :tag-data="animeInfo.genres" @onRedirect="redirectByTag"
+                :custom="'background-color: #7149c6; color: #fff'" />
 
               <div class="info-line-wrapper">
                 <info-line title="Studio">
-                  <span
-                    v-if="animeInfo.studios.length"
-                    v-for="studio in animeInfo.studios"
-                    >{{ studio.toUpperCase() }}</span
-                  >
+                  <span v-if="animeInfo.studios.length" v-for="studio in animeInfo.studios">{{ studio.toUpperCase()
+                    }}</span>
                   <span v-else>Updating</span>
                 </info-line>
                 <info-line title="Status" :data="animeInfo.status" />
@@ -203,11 +190,7 @@ watch(isLatestEpisode, (status) => {
                   <span v-else> Updating</span>
                 </info-line>
               </div>
-              <div
-                style="color: black; font-size: 14px"
-                class="mt-4"
-                v-html="animeInfo.description"
-              ></div>
+              <div style="color: black; font-size: 14px" class="mt-4" v-html="animeInfo.description"></div>
             </div>
           </div>
           <div class="iframe-trailer">
@@ -215,57 +198,28 @@ watch(isLatestEpisode, (status) => {
               <v-icon start icon="mdi-label"></v-icon>
               {{ animeInfo?.title?.romaji }} Trailer
             </v-chip>
-            <iframe
-              width="100%"
-              allowfullscreen="true"
-              frameborder="0"
-              loading="lazy"
-              height="250px"
-              :src="`https://www.youtube.com/embed/${animeInfo?.trailer?.id}`"
-            ></iframe>
+            <iframe width="100%" allowfullscreen="true" frameborder="0" loading="lazy" height="250px"
+              :src="`https://www.youtube.com/embed/${animeInfo?.trailer?.id}`"></iframe>
           </div>
         </div>
 
-        <custom-card
-        style="display:flex;justify-content: center;background:  linear-gradient(
+        <custom-card style="display:flex;justify-content: center;background:  linear-gradient(
           rgba(0, 0, 0, 0.7), 
           rgba(0, 0, 0, 0.7)
-        )"
-          icon="mdi-information-outline"
-          :title="`Episode ${episodeInfo.number}`"
-          v-else-if="route.query.episodeId"
-
-        >
-          <video
-            style="border:3px solid #fff;position:relative"
-            id="video"
-            ref="video"
-            width="700"
-            height="400"
-            preload="metadata"
-            autoplay
-            @click="playing = !playing"
-            controls
-            :poster="episodeInfo?.image"
-          >
+        )" icon="mdi-information-outline" :title="`Episode ${episodeInfo.number}`" v-else-if="route.query.episodeId">
          
-          </video>
-        
+          <media-player title="Sprite Fight" :src="videoOptions.source">
+            <media-provider></media-provider>
+            <media-video-layout
+              thumbnails="https://files.vidstack.io/sprite-fight/thumbnails.vtt"></media-video-layout>
+          </media-player>
+
         </custom-card>
         <div style="display: flex; justify-content: center" v-else-if="route.query.episodeId" class="my-3">
-          <v-btn
-            size="small"
-            :color="videoOptions.quality == item.quality ? 'error' : 'success'"
-            class="mx-2"
-            @click="getStream(item)"
-            v-for="item in episodeData?.sources"
-            >{{ item.quality }}</v-btn
-          >
-          <v-btn size="small" color="error" class="mx-2"
-            ><a :href="episodeData?.download" style="color: white"
-              >Download</a
-            ></v-btn
-          >
+          <v-btn size="small" :color="videoOptions.quality == item.quality ? 'error' : 'success'" class="mx-2"
+            @click="getStream(item)" v-for="item in episodeData?.sources">{{ item.quality }}</v-btn>
+          <v-btn size="small" color="error" class="mx-2"><a :href="episodeData?.download"
+              style="color: white">Download</a></v-btn>
         </div>
 
         <div>
@@ -273,62 +227,34 @@ watch(isLatestEpisode, (status) => {
             <v-icon start icon="mdi-label"></v-icon>
             Episode List
           </v-chip>
-          <v-switch
-            v-model="isLatestEpisode"
-            hide-details
-            inset
-            color="success"
-            label="Latest episode"
-          ></v-switch>
+          <v-switch v-model="isLatestEpisode" hide-details inset color="success" label="Latest episode"></v-switch>
           <div class="mt-4">
-            <v-btn
-              width="56"
-              @click="
+            <v-btn width="56" @click="
                 $router.replace({
                   path: route.fullPath,
                   // @ts-ignore
                   params: route.params,
                   query: { id: route.query.id },
                 })
-              "
-              class="ma-2"
-              color="success"
-              size="small"
-            >
-              Info</v-btn
-            >
-            <v-btn
-              width="56"
-              @click="
+              " class="ma-2" color="success" size="small">
+              Info</v-btn>
+            <v-btn width="56" @click="
                 $router.replace({
                   path: route.fullPath,
                   // @ts-ignore
                   params: route.params,
                   query: { ...route.query, episodeId: episode.id },
                 })
-              "
-              class="ma-2"
-              :color="route.query.episodeId == episode.id ? 'primary' : 'error'"
-              size="small"
-              v-for="episode in animeEpisodes"
-              >{{ episode.number }}</v-btn
-            >
+              " class="ma-2" :color="route.query.episodeId == episode.id ? 'primary' : 'error'" size="small"
+              v-for="episode in animeEpisodes">{{ episode.number }}</v-btn>
           </div>
         </div>
       </custom-card>
     </div>
-    <card-slide-group
-      :data="animeInfo.recommendations"
-      card-title="Recommendations anime"
-      card-title-icon="mdi-history"
-      :style="!isLoading ? '' : 'opacity : 0.5'"
-    />
-    <card-slide-group
-      :data="animeInfo.relations"
-      card-title="Relations anime"
-      card-title-icon="mdi-history"
-      :style="!isLoading ? '' : 'opacity : 0.5'"
-    />
+    <card-slide-group :data="animeInfo.recommendations" card-title="Recommendations anime" card-title-icon="mdi-history"
+      :style="!isLoading ? '' : 'opacity : 0.5'" />
+    <card-slide-group :data="animeInfo.relations" card-title="Relations anime" card-title-icon="mdi-history"
+      :style="!isLoading ? '' : 'opacity : 0.5'" />
   </div>
 </template>
 <style>

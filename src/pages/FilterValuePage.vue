@@ -23,13 +23,15 @@ const getFilterAnime = async () => {
 
   try {
     if (action.value == "generes") {
-      const { data } = await searchAnimeByGenresFunction(
-        route.query.type,
-        animePerpage.value
-      );
-      animeData.value = data.results;
-      hasNextPage.value = data.hasNextPage;
-      isLoading.value = false;
+      if (route.query.mediaType == "anime") {
+        const { data } = await searchAnimeByGenresFunction(
+          route.query.type,
+          animePerpage.value
+        );
+        animeData.value = data.results;
+        hasNextPage.value = data.hasNextPage;
+        isLoading.value = false;
+      }
     } else if (action.value == "search") {
       const { data } = await searchFunction(route.query.keyword as any);
       animeData.value = data.results;
@@ -91,7 +93,7 @@ watch(
       />
     </div>
     <div v-else-if="!animeData.length && !isLoading" class="empty-anime">
-      No anime data found.
+      No {{ route.query.type }} data found.
     </div>
     <div v-else-if="!animeData.length && isLoading" class="empty-anime">
       <progress-circle :size="47" :indeterminate="true"></progress-circle>

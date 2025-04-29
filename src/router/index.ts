@@ -68,6 +68,12 @@ const router = createRouter({
       name: "Manga Details",
       component: () => import("@/pages/MangaDetails.vue"),
       meta: { requiresAuth: false },
+    },
+    {
+      path: '/account-information',
+      name: "Account Information",
+      component: () => import("@/pages/AccountInformation.vue"),
+      meta: { requiresAuth: true },
     }
     // {
     //   path : '/bad-request-500',

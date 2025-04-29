@@ -1,11 +1,11 @@
 import config from "./mangaConfig";
 
-export const getListManga = (
-  page: number = 1,
-  category: string | null = null,
-  state: string | null = null,
-  type: string | null = null
-) =>
+export const getListManga = ({
+  page = 1,
+  category = null,
+  state = null,
+  type = null,
+}) =>
   config.get(`/api/mangaList`, {
     params: {
       category,
