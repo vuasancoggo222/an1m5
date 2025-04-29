@@ -31,7 +31,7 @@ onMounted(() => {
         <div> Updated: {{ mangaDetailData.updated }}</div>
         <div> View: {{ mangaDetailData.view }}</div>
         <div> genres: {{ mangaDetailData.genres }}</div>
-        <img :src="mangaDetailData.image" alt="">
+        <img :src="mangaDetailData.imageUrl" alt="">
         <div v-for="chapter in mangaDetailData.chapterList">
             <router-link :to="chapter.path.toString()">{{ chapter.name }}</router-link>
         </div>

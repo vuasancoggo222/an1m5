@@ -1,12 +1,12 @@
 export interface IMangaList {
     mangaList: [
         {
-            id: String,
-            image: String,
-            title: String,
-            chapter: String,
-            view: String,
-            description: String
+            id: string,
+            image: string,
+            title: string,
+            chapter: string,
+            view: string,
+            description: string
         }
     ],
     metaData: {
@@ -14,39 +14,39 @@ export interface IMangaList {
         totalPages: Number,
         type: [
             {
-                id: String,
-                type: String
+                id: string,
+                type: string
             }
         ],
         state: [
             {
-                id: String,
-                type: String
+                id: string,
+                type: string
             }
         ],
         category: [
             {
-                id: String,
-                type: String
+                id: string,
+                type: string
             }
         ],
     }
 }
 
 interface ChapterList {
-    createdAt: String,
-    id: String,
-    name: String,
-    path: String,
-    view: String,
+    createdAt: string,
+    id: string,
+    name: string,
+    path: string,
+    view: string,
 }
 export interface IMangaDetails {
-    author: String,
-    genres: String[],
-    imageUrl: String,
-    name: String,
-    status: String,
-    updated: String,
-    view: String,
+    author: string,
+    genres: string[],
+    imageUrl: string,
+    name: string,
+    status: string,
+    updated: string,
+    view: string,
     chapterList: ChapterList[],
 }
