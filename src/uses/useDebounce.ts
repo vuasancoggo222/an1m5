@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 export default function useDebounce<T extends (...args: any[]) => void>() {
-    const timeout = ref<NodeJS.Timeout | undefined>();
+    const timeout = ref<number| undefined>();
 
     const debounce = (func: T, delay: number) => {
         return (...args: Parameters<T>) => {

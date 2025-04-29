@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/store/authStore";
-const { user } = useAuthStore();
+import type { User } from 'firebase/auth';
+const authStore = useAuthStore();
+const user = authStore.user as unknown as User;
 
 </script>
 
