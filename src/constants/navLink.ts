@@ -12,10 +12,10 @@ export const navLink:INavLink[] = [
         name : "Anime Schedule",
         path : "/anime-schedule",
     },
-    {
-      name : "Manga",
-      path : "/manga",
-  }
+  //   {
+  //     name : "Manga",
+  //     path : "/manga",
+  // }
 ]
 
 export const userDropdown = [
