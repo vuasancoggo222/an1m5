@@ -10,9 +10,9 @@ const action = ref<any>();
 const { debounce } = useDebounce();
 const animePerpage = ref<number>(20);
 const title = computed(() =>
-  action.value == "generes"
-    ? `Movie ${route?.query?.type} generes`
-    : `Search results for keyword '${route.query.keyword}'`
+  action.value == "genres"
+    ? `Movie ${route?.query?.type} Generes`
+    : `Search results for keyword "${route.query.keyword}"`
 );
 const route = useRoute();
 const isLoading = ref(false);
@@ -22,7 +22,9 @@ const getFilterAnime = async () => {
   isLoading.value = true;
 
   try {
-    if (action.value == "generes") {
+    console.log(action.value);
+    
+    if (action.value == "genres") {
       if (route.query.mediaType == "anime") {
         const { data } = await searchAnimeByGenresFunction(
           route.query.type,

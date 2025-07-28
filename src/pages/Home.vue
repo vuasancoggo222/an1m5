@@ -16,6 +16,8 @@ const { recentAnimeData ,recentIsFinished } =  getRecentAnimeFunction();
 
 const getTrendingAnime = async () => {
   try {
+    console.log('abcd');
+    
     const { data } = await getTrendingAnimeFunction(trending.page,trending.trendingLimit);
     trendingAnime.value = data.results;
     isDisabledBtn.value = false
